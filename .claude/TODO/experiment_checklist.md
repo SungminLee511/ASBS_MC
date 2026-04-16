@@ -95,15 +95,15 @@ Command template: `experiment=b2_asbs beta={b} hydra.run.dir=results/e11_sweep/b
 
 | # | κ₃ | Output Dir | Seeds | State |
 |---|---|---|---|---|
-| 35 | 4 | `results/e13_sweep/kappa3_4/seed_{s}` | 0–4 | pending |
-| 36 | 6 | `results/e13_sweep/kappa3_6/seed_{s}` | 0–4 | pending |
-| 37 | 8 | `results/e13_sweep/kappa3_8/seed_{s}` | 0–4 | pending |
-| 38 | 10 | `results/e13_sweep/kappa3_10/seed_{s}` | 0–4 | pending |
-| 39 | 12 | `results/e13_sweep/kappa3_12/seed_{s}` | 0–4 | pending |
-| 40 | 14 | `results/e13_sweep/kappa3_14/seed_{s}` | 0–4 | pending |
-| 41 | 16 | `results/e13_sweep/kappa3_16/seed_{s}` | 0–4 | pending |
-| 42 | 18 | `results/e13_sweep/kappa3_18/seed_{s}` | 0–4 | pending |
-| 43 | 20 | `results/e13_sweep/kappa3_20/seed_{s}` | 0–4 | pending |
+| 35 | 4 | `results/e13_sweep/kappa3_4/seed_{s}` | 0–4 | running |
+| 36 | 6 | `results/e13_sweep/kappa3_6/seed_{s}` | 0–4 | running |
+| 37 | 8 | `results/e13_sweep/kappa3_8/seed_{s}` | 0–4 | queued |
+| 38 | 10 | `results/e13_sweep/kappa3_10/seed_{s}` | 0–4 | queued |
+| 39 | 12 | `results/e13_sweep/kappa3_12/seed_{s}` | 0–4 | queued |
+| 40 | 14 | `results/e13_sweep/kappa3_14/seed_{s}` | 0–4 | queued |
+| 41 | 16 | `results/e13_sweep/kappa3_16/seed_{s}` | 0–4 | queued |
+| 42 | 18 | `results/e13_sweep/kappa3_18/seed_{s}` | 0–4 | queued |
+| 43 | 20 | `results/e13_sweep/kappa3_20/seed_{s}` | 0–4 | queued |
 
 Command template: `experiment=b7_asbs kappa3={k} hydra.run.dir=results/e13_sweep/kappa3_{k}/seed_{s}`
 
@@ -144,8 +144,8 @@ All of these read checkpoints from Part 1 runs. Run after training + reconstruct
 | 1B: E7 multi-seed (30 + 20) | 50 | done |
 | 1C: Separation sweep B1 (12 × 5 seeds) | 60 | done |
 | 1D: Separation sweep B5 (6 × 5 seeds) | 30 | done |
-| 1E: MB temperature sweep (6 × 5 seeds) | 30 | 10 done, 20 running |
-| 1F: Metastable κ₃ sweep (9 × 5 seeds) | 45 | pending |
+| 1E: MB temperature sweep (6 × 5 seeds) | 30 | done |
+| 1F: Metastable κ₃ sweep (9 × 5 seeds) | 45 | running (queued, 10/batch on GPU 1) |
 | **Total training runs** | **239** | |
 | Post-hoc reconstruction | 1 command | pending |
 | Evaluation + figures | 1 command | pending |

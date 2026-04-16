@@ -59,7 +59,7 @@ def _analyze_sweep(base_dir, param_values, param_prefix, n_seeds, threshold=0.1)
 
 def fig_b1():
     apply_style()
-    results = _analyze_sweep(RESULTS_DIR / "e10_b1_sweep", E10_B1_SEPARATIONS, "d", E10_N_SEEDS)
+    results = _analyze_sweep(RESULTS_DIR / "sep_sweep_b1", E10_B1_SEPARATIONS, "d", E10_N_SEEDS)
     if not results:
         print("  [skip] No E10/B1 data")
         return
@@ -93,7 +93,7 @@ def fig_b1():
 
 def fig_b5():
     apply_style()
-    results = _analyze_sweep(RESULTS_DIR / "e10_b5_sweep", E10_B5_CENTER_SCALES, "cs", E10_N_SEEDS)
+    results = _analyze_sweep(RESULTS_DIR / "sep_sweep_b5", E10_B5_CENTER_SCALES, "cs", E10_N_SEEDS)
     if not results:
         print("  [skip] No E10/B5 data")
         return

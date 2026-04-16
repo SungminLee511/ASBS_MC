@@ -19,7 +19,7 @@ from config import (
 
 
 def _analyze(separations, n_seeds, collapse_threshold=0.3):
-    base = RESULTS_DIR / "e8_sweep"
+    base = RESULTS_DIR / "sep_sweep_b1"
     collapse = {}
     j11_est = {}
 

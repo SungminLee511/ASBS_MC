@@ -65,7 +65,7 @@ def table_mode_concentration(seed=0):
 
 def table_e8_jacobian():
     """Table: J₁₁ and collapse probability per separation."""
-    base = RESULTS_DIR / "e8_sweep"
+    base = RESULTS_DIR / "sep_sweep_b1"
     lines = [_latex_header(
         "$J_{11}^\\eta$ threshold verification",
         "tab:e8_jacobian",

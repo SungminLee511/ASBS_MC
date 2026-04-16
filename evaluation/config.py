@@ -61,8 +61,8 @@ E7_NUM_EPOCHS = 1000
 E1_BENCHMARKS = ["b1", "b2", "b3", "b5", "b6", "b7"]
 
 # E8: Jacobian threshold
-E8_SEPARATIONS = [3, 5, 7, 9, 12, 15, 20]
-E8_N_SEEDS = 10
+E8_SEPARATIONS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20]
+E8_N_SEEDS = 5
 E8_SIGMA_SDE = 3.0  # σ_max from b1_asbs
 
 # E11: Müller-Brown sweep
@@ -75,9 +75,9 @@ E13_KAPPA1 = 20.0
 E13_N_SEEDS = 20
 
 # E10: Separation sweep
-E10_B1_SEPARATIONS = [2, 3, 4, 5, 6, 8, 10, 12, 15, 20]
+E10_B1_SEPARATIONS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20]
 E10_B5_CENTER_SCALES = [2, 3, 4, 5, 7, 10]
-E10_N_SEEDS = 10
+E10_N_SEEDS = 5
 
 # Checkpoints to visualize for post-hoc scripts (E3, E4, E5, E6)
 VIZ_EPOCHS = [50, 200, 500, 1000]
