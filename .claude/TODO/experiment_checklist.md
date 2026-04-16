@@ -48,14 +48,14 @@ Shared between E8 (Jacobian threshold) and E10 (separation sweep). All use `w1=0
 | 12 | 3 | [-1.5, 0] | [1.5, 0] | `results/sep_sweep_b1/d_3/seed_{s}` | 0–4 | done |
 | 13 | 4 | [-2, 0] | [2, 0] | `results/sep_sweep_b1/d_4/seed_{s}` | 0–4 | done |
 | 14 | 5 | [-2.5, 0] | [2.5, 0] | `results/sep_sweep_b1/d_5/seed_{s}` | 0–4 | done |
-| 15 | 6 | [-3, 0] | [3, 0] | `results/sep_sweep_b1/d_6/seed_{s}` | 0–4 | s0 done, s1–4 running |
-| 16 | 7 | [-3.5, 0] | [3.5, 0] | `results/sep_sweep_b1/d_7/seed_{s}` | 0–4 | s0 done, s1–4 running |
-| 17 | 8 | [-4, 0] | [4, 0] | `results/sep_sweep_b1/d_8/seed_{s}` | 0–4 | running |
-| 18 | 9 | [-4.5, 0] | [4.5, 0] | `results/sep_sweep_b1/d_9/seed_{s}` | 0–4 | running |
-| 19 | 10 | [-5, 0] | [5, 0] | `results/sep_sweep_b1/d_10/seed_{s}` | 0–4 | pending |
-| 20 | 12 | [-6, 0] | [6, 0] | `results/sep_sweep_b1/d_12/seed_{s}` | 0–4 | pending |
-| 21 | 15 | [-7.5, 0] | [7.5, 0] | `results/sep_sweep_b1/d_15/seed_{s}` | 0–4 | pending |
-| 22 | 20 | [-10, 0] | [10, 0] | `results/sep_sweep_b1/d_20/seed_{s}` | 0–4 | pending |
+| 15 | 6 | [-3, 0] | [3, 0] | `results/sep_sweep_b1/d_6/seed_{s}` | 0–4 | done |
+| 16 | 7 | [-3.5, 0] | [3.5, 0] | `results/sep_sweep_b1/d_7/seed_{s}` | 0–4 | done |
+| 17 | 8 | [-4, 0] | [4, 0] | `results/sep_sweep_b1/d_8/seed_{s}` | 0–4 | done |
+| 18 | 9 | [-4.5, 0] | [4.5, 0] | `results/sep_sweep_b1/d_9/seed_{s}` | 0–4 | done |
+| 19 | 10 | [-5, 0] | [5, 0] | `results/sep_sweep_b1/d_10/seed_{s}` | 0–4 | running |
+| 20 | 12 | [-6, 0] | [6, 0] | `results/sep_sweep_b1/d_12/seed_{s}` | 0–4 | running |
+| 21 | 15 | [-7.5, 0] | [7.5, 0] | `results/sep_sweep_b1/d_15/seed_{s}` | 0–4 | running |
+| 22 | 20 | [-10, 0] | [10, 0] | `results/sep_sweep_b1/d_20/seed_{s}` | 0–4 | running |
 
 Command template: `experiment=b1_asbs w1=0.5 energy.mu1=[{mu1}] energy.mu2=[{mu2}] hydra.run.dir=results/sep_sweep_b1/d_{d}/seed_{s}`
 
@@ -142,7 +142,7 @@ All of these read checkpoints from Part 1 runs. Run after training + reconstruct
 |------|------|--------|
 | 1A: Base benchmarks (8 × 3 seeds) | 24 | done |
 | 1B: E7 multi-seed (30 + 20) | 50 | done |
-| 1C: Separation sweep B1 (12 × 5 seeds) | 60 | 22 done, 18 running, 20 pending |
+| 1C: Separation sweep B1 (12 × 5 seeds) | 60 | 40 done, 20 running |
 | 1D: Separation sweep B5 (6 × 5 seeds) | 30 | pending |
 | 1E: MB temperature sweep (6 × 5 seeds) | 30 | pending |
 | 1F: Metastable κ₃ sweep (9 × 5 seeds) | 45 | pending |
