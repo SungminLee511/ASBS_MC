@@ -142,8 +142,8 @@ All of these read checkpoints from Part 1 runs. Run after training + reconstruct
 |------|------|--------|
 | 1A: Base benchmarks (8 × 3 seeds) | 24 | done |
 | 1B: E7 multi-seed (30 + 20) | 50 | done |
-| 1C: Separation sweep B1 (12 × 5 seeds) | 60 | 40 done, 20 running |
-| 1D: Separation sweep B5 (6 × 5 seeds) | 30 | pending |
+| 1C: Separation sweep B1 (12 × 5 seeds) | 60 | done |
+| 1D: Separation sweep B5 (6 × 5 seeds) | 30 | running |
 | 1E: MB temperature sweep (6 × 5 seeds) | 30 | pending |
 | 1F: Metastable κ₃ sweep (9 × 5 seeds) | 45 | pending |
 | **Total training runs** | **239** | |
