@@ -52,7 +52,15 @@ These results confirm the theoretical prediction: ASBS exhibits mode concentrati
 
 **B4** (Neal's Funnel) and **B8** (LJ3) do not have discrete mode structure — they were evaluated on energy metrics only (no α_k tracking).
 
-**Figures:** `fig_e1_b{1,2,3,5,6,7}_alpha.pdf` — mode weight α_k trajectories over training.
+### Mode Weight Trajectories (α_k vs Epoch)
+
+| B1 (80/20) | B2 (Muller-Brown) | B3 (Warped DW) |
+|:---:|:---:|:---:|
+| ![](figures/png/fig_e1_b1_alpha.png) | ![](figures/png/fig_e1_b2_alpha.png) | ![](figures/png/fig_e1_b3_alpha.png) |
+
+| B5 (Het. Covariance) | B6 (25-mode Grid) | B7 (Three-Well) |
+|:---:|:---:|:---:|
+| ![](figures/png/fig_e1_b5_alpha.png) | ![](figures/png/fig_e1_b6_alpha.png) | ![](figures/png/fig_e1_b7_alpha.png) |
 
 ### Key Observations
 
@@ -83,7 +91,7 @@ These results confirm the theoretical prediction: ASBS exhibits mode concentrati
 
 **All 30 seeds maintain balanced mode weights.** There is no symmetry-breaking bifurcation. This is a critical negative result: when modes are truly symmetric, ASBS does NOT exhibit mode collapse, even across many random seeds.
 
-**Figure:** `fig_e7_b1_pitchfork.pdf`
+![B1 Pitchfork Diagram](figures/png/fig_e7_b1_pitchfork.png)
 
 ### B7 — Ternary Collapse Pattern
 
@@ -95,7 +103,7 @@ These results confirm the theoretical prediction: ASBS exhibits mode concentrati
 
 Across 20 seeds, mode 2 is almost always killed (α₂ ≈ 0.01), while mode 3 absorbs the extra mass (α₃ ≈ 0.794 vs target 0.555). Mode 1 survives at roughly the correct weight. This is a consistent ternary collapse pattern: one of the two minority modes dies, and the majority mode inflates.
 
-**Figure:** `fig_e7_b7_ternary.pdf`
+![B7 Ternary Diagram](figures/png/fig_e7_b7_ternary.png)
 
 ---
 
@@ -118,7 +126,7 @@ Across 20 seeds, mode 2 is almost always killed (α₂ ≈ 0.01), while mode 3 a
 | 15 | 5.00 | 0% | 0.0042 ± 0.0042 |
 | 20 | 6.67 | 0% | 0.0248 ± 0.0330 |
 
-**Figures:** `fig_e10_b1_sweep.pdf`
+![B1 Separation Sweep](figures/png/fig_e10_b1_sweep.png)
 
 ### Analysis
 
@@ -143,7 +151,7 @@ This confirms that mode separation alone does NOT cause mode collapse in ASBS wh
 | 7 | 5/5 (100%) | 0.4686 ± 0.0350 |
 | 10 | 5/5 (100%) | 0.5078 ± 0.0514 |
 
-**Figures:** `fig_e10_b5_sweep.pdf`
+![B5 Separation Sweep](figures/png/fig_e10_b5_sweep.png)
 
 ### Analysis
 
@@ -235,7 +243,7 @@ Target weights: w = [0.222, 0.222, 0.555]
 
 **Collapse is immediate and permanent.** From epoch 0, all mass goes to mode 3. This is NOT a training dynamics issue — the initialized policy already concentrates on the majority mode. Training slowly improves KL (0.588 → 0.517) but never recovers the minority modes. The adjoint loss landscape has no gradient signal for dead modes.
 
-**Figure:** `fig_e1_b7_alpha.pdf`
+![B7 Mode Tracking](figures/png/fig_e1_b7_alpha.png)
 
 ### B6 25-Mode Power-Law: Gradual Recovery
 
@@ -252,7 +260,9 @@ Target weights: w = [0.222, 0.222, 0.555]
 
 KL drops steadily from 3.25 to 0.33, showing continuous improvement. But the final KL is still substantial, indicating weight mismatch (rare modes are underweighted) even though all modes are technically alive.
 
-**Figures:** `fig_e1_b6_alpha.pdf`, `fig_e1_b6_heatmap.pdf`, `fig_e12_cascade.pdf`
+| B6 Mode Tracking | B6 25-Mode Heatmap | B6 Death Cascade |
+|:---:|:---:|:---:|
+| ![](figures/png/fig_e1_b6_alpha.png) | ![](figures/png/fig_e1_b6_heatmap.png) | ![](figures/png/fig_e12_cascade.png) |
 
 ---
 
@@ -275,7 +285,7 @@ KL drops steadily from 3.25 to 0.33, showing continuous improvement. But the fin
 | 15 | 5.0 | 0.97 ± 0.09 | 0% |
 | 20 | 6.7 | 0.99 ± 0.16 | 0% |
 
-**Figure:** `fig_e8_threshold.pdf`
+![Jacobian Threshold](figures/png/fig_e8_threshold.png)
 
 ### Analysis
 
@@ -318,28 +328,53 @@ These results provide the empirical baseline for the SDR (Stein Discrepancy Regu
 
 ---
 
-## Appendix: Generated Figures
+## Appendix A: Additional Figures
 
-| Figure | Description | Key Result |
-|--------|-------------|------------|
-| `fig_e1_b*_alpha.pdf` | Mode weight α_k vs epoch | B7 immediate collapse; B6 gradual recovery |
-| `fig_e1_b1_multi.pdf` | B1 multi-seed overlay | Consistent behavior across seeds |
-| `fig_e1_b6_heatmap.pdf` | B6 25-mode heatmap | Power-law weight structure |
-| `fig_e2_b3_eta.pdf`, `fig_e2_b7_eta.pdf` | Learned vs oracle η_k | Regression weight heatmaps |
-| `fig_e3_b{1,5,7}_decomp.pdf` | Loss decomposition V_intra + V_inter | Loss structure across benchmarks |
-| `fig_e4_b{1,3,7}_field.pdf` | Controller vector field | Policy quiver plots |
-| `fig_e5_b{1,3,7}_density.pdf` | Terminal density vs target | KDE contour comparison |
-| `fig_e5_b6_scatter.pdf` | B6 terminal scatter | 25-mode coverage |
-| `fig_e6_b{1,3,7}_traj.pdf` | Trajectory spaghetti plots | Transport paths |
-| `fig_e7_b1_pitchfork.pdf` | B1 pitchfork diagram | No bifurcation (30/30 balanced) |
-| `fig_e7_b7_ternary.pdf` | B7 ternary diagram | Mode 2 dies across 20 seeds |
-| `fig_e8_threshold.pdf` | J₁₁ vs ρ_sep | Jacobian above threshold but no collapse |
-| `fig_e9_b{1,5,6}_kl.pdf` | KL decomposition over training | KL evolution curves |
-| `fig_e10_b1_sweep.pdf` | B1 separation sweep | 0% collapse at all d |
-| `fig_e10_b5_sweep.pdf` | B5 center_scale sweep | Phase transition at cs≈3.5 |
-| `fig_e12_cascade.pdf` | B6 death cascade | Survival curves |
+### Multi-Seed Overlays (E1)
 
-## Appendix: LaTeX Tables
+| B1 Multi-Seed | B7 Multi-Seed |
+|:---:|:---:|
+| ![](figures/png/fig_e1_b1_multi.png) | ![](figures/png/fig_e1_b7_multi.png) |
+
+### Regression Weight Heatmaps (E2)
+
+| B3 Learned η_k | B7 Learned η_k |
+|:---:|:---:|
+| ![](figures/png/fig_e2_b3_eta.png) | ![](figures/png/fig_e2_b7_eta.png) |
+
+### Loss Decomposition (E3)
+
+| B1 | B5 | B7 |
+|:---:|:---:|:---:|
+| ![](figures/png/fig_e3_b1_decomp.png) | ![](figures/png/fig_e3_b5_decomp.png) | ![](figures/png/fig_e3_b7_decomp.png) |
+
+### Controller Vector Fields (E4)
+
+| B1 | B3 | B7 |
+|:---:|:---:|:---:|
+| ![](figures/png/fig_e4_b1_field.png) | ![](figures/png/fig_e4_b3_field.png) | ![](figures/png/fig_e4_b7_field.png) |
+
+### Terminal Density vs Target (E5)
+
+| B1 | B3 | B7 | B6 Scatter |
+|:---:|:---:|:---:|:---:|
+| ![](figures/png/fig_e5_b1_density.png) | ![](figures/png/fig_e5_b3_density.png) | ![](figures/png/fig_e5_b7_density.png) | ![](figures/png/fig_e5_b6_scatter.png) |
+
+### Trajectory Visualizations (E6)
+
+| B1 | B3 | B7 |
+|:---:|:---:|:---:|
+| ![](figures/png/fig_e6_b1_traj.png) | ![](figures/png/fig_e6_b3_traj.png) | ![](figures/png/fig_e6_b7_traj.png) |
+
+### KL Decomposition Over Training (E9)
+
+| B1 | B5 | B6 |
+|:---:|:---:|:---:|
+| ![](figures/png/fig_e9_b1_kl.png) | ![](figures/png/fig_e9_b5_kl.png) | ![](figures/png/fig_e9_b6_kl.png) |
+
+---
+
+## Appendix B: LaTeX Tables
 
 All tables are in `tables/`:
 - `table_mode_concentration.tex` — Base benchmark summary
