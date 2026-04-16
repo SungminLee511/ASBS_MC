@@ -42,7 +42,8 @@ class Synthetic2DEvaluator:
     ):
         self.energy = energy
         self.dim = energy.dim
-        self.device = device
+        # Use the energy's device if available (energy is on cuda during training)
+        self.device = getattr(energy, "device", device)
 
         # Detect grid range from mode centers
         if grid_range is not None:
@@ -69,7 +70,7 @@ class Synthetic2DEvaluator:
         # Generate reference samples via grid importance sampling
         print(f"  Generating {n_ref_samples} reference samples via importance sampling...")
         self.ref_samples = self._generate_reference_samples(
-            n_ref_samples, grid_size, device
+            n_ref_samples, grid_size, self.device
         )
         print(f"  Reference samples: shape={self.ref_samples.shape}")
 
@@ -133,23 +134,28 @@ class Synthetic2DEvaluator:
         B, D = samples.shape
         assert D == self.dim
 
+        # Move samples to energy's device for eval, keep cpu copy for metrics
+        energy_device = self.device
+        samples_dev = samples.to(energy_device)
         samples_cpu = samples.cpu()
         result = {}
 
         # ── Energy W2 ──
         idxs = torch.randperm(len(self.ref_samples))[:B]
-        ref = self.ref_samples[idxs]
+        ref = self.ref_samples[idxs].to(energy_device)
 
         with torch.no_grad():
-            gen_E = self.energy.eval(samples_cpu).numpy()
-            ref_E = self.energy.eval(ref).numpy()
+            gen_E = self.energy.eval(samples_dev).cpu().numpy()
+            ref_E = self.energy.eval(ref).cpu().numpy()
 
         result["energy_w2"] = float(pot.emd2_1d(ref_E, gen_E) ** 0.5)
+
+        ref_cpu = ref.cpu()
 
         # ── Marginal W2 (per coordinate) ──
         for d in range(D):
             w2_d = float(pot.emd2_1d(
-                ref[:, d].numpy(), samples_cpu[:, d].numpy()
+                ref_cpu[:, d].numpy(), samples_cpu[:, d].numpy()
             ) ** 0.5)
             result[f"marginal_w2_x{d}"] = w2_d
         result["marginal_w2_mean"] = float(np.mean(
@@ -163,7 +169,7 @@ class Synthetic2DEvaluator:
             theta = torch.randn(D)
             theta = theta / theta.norm()
             proj_gen = (samples_cpu @ theta).numpy()
-            proj_ref = (ref @ theta).numpy()
+            proj_ref = (ref_cpu @ theta).numpy()
             sw2 += pot.emd2_1d(proj_ref, proj_gen)
         result["sliced_w2"] = float((sw2 / n_proj) ** 0.5)
 

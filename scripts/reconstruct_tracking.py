@@ -34,6 +34,10 @@ import torch
 import numpy as np
 from pathlib import Path
 
+# Ensure project root is on path (for adjoint_samplers imports in checkpoint loading)
+_project_root = str(Path(__file__).resolve().parent.parent)
+if _project_root not in sys.path:
+    sys.path.insert(0, _project_root)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from mc_utils import (
     load_model_from_checkpoint,
@@ -84,12 +88,11 @@ def reconstruct_single_run(
             model = load_model_from_checkpoint(str(ckpt), device=device)
             energy = model["energy"]
             samples = generate_samples(model, n_samples=n_samples, device=device)
-            samples_cpu = samples.cpu()
 
             # ── Mode tracking ──
             if hasattr(energy, "mode_centers") and hasattr(energy, "mode_weights"):
                 mode_centers = energy.mode_centers.to(device)
-                mode_weights = energy.mode_weights
+                mode_weights = energy.mode_weights.cpu()
                 K = mode_centers.shape[0]
 
                 assignments = assign_modes_nearest(samples, mode_centers)
@@ -111,7 +114,7 @@ def reconstruct_single_run(
 
             # ── Eval metrics ──
             with torch.no_grad():
-                E_gen = energy.eval(samples_cpu).numpy()
+                E_gen = energy.eval(samples).cpu().numpy()
 
             eval_record = {
                 "epoch": epoch,

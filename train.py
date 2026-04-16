@@ -276,6 +276,25 @@ def main(cfg):
                     corrector_matcher=corrector_matcher,
                 )
 
+            # ── Checkpoint saving (independent of eval) ──
+            save_this_epoch = (
+                "save_freq" in cfg
+                and cfg.save_freq > 0
+                and epoch % cfg.save_freq == 0
+                and not eval_this_epoch  # avoid double-saving
+            )
+            if distributed_mode.is_main_process() and save_this_epoch:
+                print("Saving checkpoint ... ")
+                train_utils.save(
+                    epoch,
+                    cfg,
+                    optimizer,
+                    controller,
+                    adjoint_matcher,
+                    corrector=corrector,
+                    corrector_matcher=corrector_matcher,
+                )
+
     except Exception as e:
         # This way we have the full traceback in the log.  otherwise Hydra
         # will handle the exception and store only the error in a pkl file
