@@ -28,7 +28,9 @@ rescale_t: null
 
 # === training ===
 num_epochs: 2000
-max_grad_E_norm: null
+max_grad_E_norm: 10.0
+clip_grad_norm: true
+clip_target_norm: 1.0
 init_stage: adjoint
 
 adj_num_epochs_per_stage: 100
@@ -40,7 +42,7 @@ adjoint_matcher:
   resample_size: 512
   num_epochs_per_stage: ${adj_num_epochs_per_stage}
   optim:
-    lr: 1e-3
+    lr: 1e-4
     weight_decay: 1e-7
 
 corrector_matcher:
@@ -49,7 +51,7 @@ corrector_matcher:
   resample_size: 512
   num_epochs_per_stage: ${ctr_num_epochs_per_stage}
   optim:
-    lr: 1e-3
+    lr: 1e-4
     weight_decay: 1e-7
 
 # === eval & logging ===

@@ -16,14 +16,14 @@ Needed by: E1 (all), E2 (B3), E3 (B1,B5,B7), E4 (B1,B3,B7), E5 (all), E6 (B1,B3,
 
 | # | Benchmark | Config | Params | Output Dir | Seeds | State |
 |---|---|---|---|---|---|---|
-| 1 | B1: 2-mode Gaussian (80/20) | `b1_asbs` | default | `results/b1_asbs/seed_{s}` | 0,1,2 | pending |
-| 2 | B2: Müller-Brown | `b2_asbs` | `beta=0.01` | `results/b2_asbs/seed_{s}` | 0,1,2 | pending |
-| 3 | B3: Warped Double Well | `b3_asbs` | default (γ=5) | `results/b3_asbs/seed_{s}` | 0,1,2 | pending |
-| 4 | B4: Neal's Funnel | `b4_asbs` | default | `results/b4_asbs/seed_{s}` | 0,1,2 | pending |
-| 5 | B5: Het. Covariance Mixture | `b5_asbs` | default (cs=5) | `results/b5_asbs/seed_{s}` | 0,1,2 | pending |
-| 6 | B6: 25-mode Power-Law Grid | `b6_asbs` | default | `results/b6_asbs/seed_{s}` | 0,1,2 | pending |
-| 7 | B7: Three-Well Metastable | `b7_asbs` | default (κ₃=8) | `results/b7_asbs/seed_{s}` | 0,1,2 | pending |
-| 8 | B8: LJ3 | `b8_asbs` | default | `results/b8_asbs/seed_{s}` | 0,1,2 | pending |
+| 1 | B1: 2-mode Gaussian (80/20) | `b1_asbs` | default | `results/b1_asbs/seed_{s}` | 0,1,2 | done |
+| 2 | B2: Müller-Brown | `b2_asbs` | `beta=0.01` | `results/b2_asbs/seed_{s}` | 0,1,2 | done |
+| 3 | B3: Warped Double Well | `b3_asbs` | default (γ=5) | `results/b3_asbs/seed_{s}` | 0,1,2 | done |
+| 4 | B4: Neal's Funnel | `b4_asbs` | default | `results/b4_asbs/seed_{s}` | 0,1,2 | done |
+| 5 | B5: Het. Covariance Mixture | `b5_asbs` | default (cs=5) | `results/b5_asbs/seed_{s}` | 0,1,2 | done |
+| 6 | B6: 25-mode Power-Law Grid | `b6_asbs` | default | `results/b6_asbs/seed_{s}` | 0,1,2 | done |
+| 7 | B7: Three-Well Metastable | `b7_asbs` | default (κ₃=8) | `results/b7_asbs/seed_{s}` | 0,1,2 | done |
+| 8 | B8: LJ3 | `b8_asbs` | default | `results/b8_asbs/seed_{s}` | 0,1,2 | done |
 
 **Subtotal: 24 runs**
 
@@ -33,7 +33,7 @@ Extra seeds beyond the base 3. Needed by: E7
 
 | # | Benchmark | Config | Params | Output Dir | Seeds | State |
 |---|---|---|---|---|---|---|
-| 9 | B1 symmetric | `b1_asbs` | `w1=0.5` | `results/e7_b1_sym/seed_{s}` | 0–29 | pending |
+| 9 | B1 symmetric | `b1_asbs` | `w1=0.5` | `results/e7_b1_sym/seed_{s}` | 0–29 | s0–17 running, s18–29 pending |
 | 10 | B7 | `b7_asbs` | default | `results/e7_b7/seed_{s}` | 0–19 | pending |
 
 **Subtotal: 50 runs**
