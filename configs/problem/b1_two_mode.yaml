@@ -1,0 +1,12 @@
+# @package _global_
+
+# B1: Asymmetric Two-Mode Gaussian (2D)
+dim: 2
+
+energy:
+  _target_: adjoint_samplers.energies.synthetic_energies.AsymmetricTwoModeGaussian
+  dim: ${dim}
+  w1: ${w1}
+  sigma: ${source_sigma}
+
+evaluator: null

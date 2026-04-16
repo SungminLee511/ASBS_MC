@@ -1,0 +1,10 @@
+# @package _global_
+
+# B4: Neal's Funnel (2D)
+dim: 2
+
+energy:
+  _target_: adjoint_samplers.energies.synthetic_energies.NealsFunnelEnergy
+  dim: ${dim}
+
+evaluator: null

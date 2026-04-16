@@ -1,0 +1,13 @@
+# @package _global_
+
+# B6: 25-Mode Grid with Power-Law Weights (2D)
+dim: 2
+
+energy:
+  _target_: adjoint_samplers.energies.synthetic_energies.PowerLawGridMixture
+  dim: ${dim}
+  spacing: ${spacing}
+  sigma: ${source_sigma}
+  alpha: ${zipf_alpha}
+
+evaluator: null

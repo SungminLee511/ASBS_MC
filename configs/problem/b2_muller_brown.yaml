@@ -1,0 +1,11 @@
+# @package _global_
+
+# B2: Müller-Brown Potential (2D)
+dim: 2
+
+energy:
+  _target_: adjoint_samplers.energies.synthetic_energies.MullerBrownEnergy
+  dim: ${dim}
+  beta: ${beta}
+
+evaluator: null

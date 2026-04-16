@@ -1,0 +1,11 @@
+# @package _global_
+
+# B5: Heterogeneous Covariance Mixture (2D)
+dim: 2
+
+energy:
+  _target_: adjoint_samplers.energies.synthetic_energies.HeterogeneousCovarianceMixture
+  dim: ${dim}
+  center_scale: ${center_scale}
+
+evaluator: null

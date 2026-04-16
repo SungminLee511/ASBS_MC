@@ -1,0 +1,12 @@
+# @package _global_
+
+# B7: Three-Well with Metastable State (2D)
+dim: 2
+
+energy:
+  _target_: adjoint_samplers.energies.synthetic_energies.ThreeWellMetastableEnergy
+  dim: ${dim}
+  kappa1: ${kappa1}
+  kappa3: ${kappa3}
+
+evaluator: null

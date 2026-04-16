@@ -1,6 +1,7 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 
 import sys
+import json
 import traceback
 import hydra
 import numpy as np
@@ -201,13 +202,66 @@ def main(cfg):
                         ))
 
                     samples = torch.cat(x1_list, dim=0)
-                    eval_dict = evaluator(samples)
-                    print(f"Evaluated @{epoch=}!")
 
-                    if "hist_img" in eval_dict:
-                        eval_dict["hist_img"].save(eval_dir / "gen.png")
+                    if evaluator is not None:
+                        eval_dict = evaluator(samples)
+                        print(f"Evaluated @{epoch=}!")
 
-                    writer.log(eval_dict, step=epoch)
+                        if "hist_img" in eval_dict:
+                            eval_dict["hist_img"].save(eval_dir / "gen.png")
+
+                        writer.log(eval_dict, step=epoch)
+                    else:
+                        print(f"Skipping evaluation (no evaluator) @{epoch=}")
+
+                    # ── Mode tracking (for mode concentration experiments) ──
+                    if hasattr(energy, "mode_centers") and hasattr(energy, "mode_weights"):
+                        mode_centers = energy.mode_centers.to(samples.device)
+                        K = mode_centers.shape[0]
+                        dists = torch.cdist(
+                            samples.unsqueeze(0),
+                            mode_centers.unsqueeze(0),
+                        ).squeeze(0)
+                        assignments = dists.argmin(dim=-1)
+                        alpha = torch.zeros(K, dtype=torch.float64)
+                        for k in range(K):
+                            alpha[k] = (assignments == k).sum().item()
+                        alpha = (alpha / alpha.sum()).float()
+
+                        w = energy.mode_weights.to(alpha.device)
+                        # KL(α || w)
+                        a_safe = alpha.clamp(min=1e-10)
+                        w_safe = w.clamp(min=1e-10)
+                        kl_val = (a_safe * (a_safe.log() - w_safe.log())).sum().item()
+                        tv_val = 0.5 * (alpha - w).abs().sum().item()
+                        alive = int((alpha > 0.1 * w).sum().item())
+
+                        record = {
+                            "epoch": epoch,
+                            "stage": stage,
+                            "loss": loss,
+                            "alpha": alpha.tolist(),
+                            "target_w": w.tolist(),
+                            "kl": kl_val,
+                            "tv": tv_val,
+                            "alive_modes": alive,
+                        }
+                        tracking_path = Path("mode_tracking.jsonl")
+                        with open(tracking_path, "a") as f:
+                            f.write(json.dumps(record) + "\n")
+
+                        writer.log({
+                            "kl_mode": kl_val,
+                            "tv_mode": tv_val,
+                            "alive_modes": alive,
+                        }, step=epoch)
+
+                        alpha_str = ", ".join(
+                            f"{a:.3f}" for a in alpha.tolist()
+                        )
+                        print(f"[mode_track] α=[{alpha_str}] "
+                              f"KL={kl_val:.4f} TV={tv_val:.4f} "
+                              f"alive={alive}/{K}")
 
                 print("Saving checkpoint ... ")
                 train_utils.save(

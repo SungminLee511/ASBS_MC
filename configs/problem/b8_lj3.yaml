@@ -1,0 +1,13 @@
+# @package _global_
+
+# B8: Lennard-Jones 3 particles in 2D (6D after removing COM: 3 DoF effective)
+dim: 6
+n_particles: 3
+spatial_dim: 2
+
+energy:
+  _target_: adjoint_samplers.energies.lennard_jones_energy.LennardJonesEnergy
+  dim: ${dim}
+  n_particles: ${n_particles}
+
+evaluator: null
