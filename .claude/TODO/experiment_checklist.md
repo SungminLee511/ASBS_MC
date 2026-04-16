@@ -1,138 +1,154 @@
 # Experiment Checklist
 
-All training runs use `save_freq=10 eval_freq=99999 num_epochs=2000`.
-After training: `python scripts/reconstruct_tracking.py --results-dir results --recursive --n-samples 10000`
-Then: `python evaluation/run_all.py`
+**Training:** `save_freq=10 eval_freq=99999 num_epochs=1500`
+**Post-hoc:** `python scripts/reconstruct_tracking.py --results-dir results --recursive --n-samples 10000`
+**Figures/tables:** `python evaluation/run_all.py`
 
 ---
 
-## Single-Benchmark Runs (3 seeds each)
+## Part 1: Training Runs
 
-These are the base training runs needed by all experiments. Each produces checkpoints + logs.
+Training runs produce checkpoints. All evaluation/visualization (E1–E13) is done **post-hoc** from these checkpoints — no separate "experiment runs" needed.
 
-| # | Experiment Config | Seeds | Command Template | State |
+### 1A. Base Benchmark Training (3 seeds each)
+
+Needed by: E1 (all), E2 (B3), E3 (B1,B5,B7), E4 (B1,B3,B7), E5 (all), E6 (B1,B3,B7), E9 (B1,B5,B6)
+
+| # | Benchmark | Config | Params | Output Dir | Seeds | State |
+|---|---|---|---|---|---|---|
+| 1 | B1: 2-mode Gaussian (80/20) | `b1_asbs` | default | `results/b1_asbs/seed_{s}` | 0,1,2 | pending |
+| 2 | B2: Müller-Brown | `b2_asbs` | `beta=0.01` | `results/b2_asbs/seed_{s}` | 0,1,2 | pending |
+| 3 | B3: Warped Double Well | `b3_asbs` | default (γ=5) | `results/b3_asbs/seed_{s}` | 0,1,2 | pending |
+| 4 | B4: Neal's Funnel | `b4_asbs` | default | `results/b4_asbs/seed_{s}` | 0,1,2 | pending |
+| 5 | B5: Het. Covariance Mixture | `b5_asbs` | default (cs=5) | `results/b5_asbs/seed_{s}` | 0,1,2 | pending |
+| 6 | B6: 25-mode Power-Law Grid | `b6_asbs` | default | `results/b6_asbs/seed_{s}` | 0,1,2 | pending |
+| 7 | B7: Three-Well Metastable | `b7_asbs` | default (κ₃=8) | `results/b7_asbs/seed_{s}` | 0,1,2 | pending |
+| 8 | B8: LJ3 | `b8_asbs` | default | `results/b8_asbs/seed_{s}` | 0,1,2 | pending |
+
+**Subtotal: 24 runs**
+
+### 1B. E7 Multi-Seed (pitchfork + ternary)
+
+Extra seeds beyond the base 3. Needed by: E7
+
+| # | Benchmark | Config | Params | Output Dir | Seeds | State |
+|---|---|---|---|---|---|---|
+| 9 | B1 symmetric | `b1_asbs` | `w1=0.5` | `results/e7_b1_sym/seed_{s}` | 0–29 | pending |
+| 10 | B7 | `b7_asbs` | default | `results/e7_b7/seed_{s}` | 0–19 | pending |
+
+**Subtotal: 50 runs**
+
+### 1C. E8 + E10 Separation Sweep — B1 Symmetric
+
+Shared between E8 (Jacobian threshold) and E10 (separation sweep). All use `w1=0.5`.
+
+| # | d | mu1 | mu2 | Output Dir | Seeds | State |
+|---|---|---|---|---|---|---|
+| 11 | 2 | [-1, 0] | [1, 0] | `results/sep_sweep_b1/d_2/seed_{s}` | 0–4 | pending |
+| 12 | 3 | [-1.5, 0] | [1.5, 0] | `results/sep_sweep_b1/d_3/seed_{s}` | 0–4 | pending |
+| 13 | 4 | [-2, 0] | [2, 0] | `results/sep_sweep_b1/d_4/seed_{s}` | 0–4 | pending |
+| 14 | 5 | [-2.5, 0] | [2.5, 0] | `results/sep_sweep_b1/d_5/seed_{s}` | 0–4 | pending |
+| 15 | 6 | [-3, 0] | [3, 0] | `results/sep_sweep_b1/d_6/seed_{s}` | 0–4 | pending |
+| 16 | 7 | [-3.5, 0] | [3.5, 0] | `results/sep_sweep_b1/d_7/seed_{s}` | 0–4 | pending |
+| 17 | 8 | [-4, 0] | [4, 0] | `results/sep_sweep_b1/d_8/seed_{s}` | 0–4 | pending |
+| 18 | 9 | [-4.5, 0] | [4.5, 0] | `results/sep_sweep_b1/d_9/seed_{s}` | 0–4 | pending |
+| 19 | 10 | [-5, 0] | [5, 0] | `results/sep_sweep_b1/d_10/seed_{s}` | 0–4 | pending |
+| 20 | 12 | [-6, 0] | [6, 0] | `results/sep_sweep_b1/d_12/seed_{s}` | 0–4 | pending |
+| 21 | 15 | [-7.5, 0] | [7.5, 0] | `results/sep_sweep_b1/d_15/seed_{s}` | 0–4 | pending |
+| 22 | 20 | [-10, 0] | [10, 0] | `results/sep_sweep_b1/d_20/seed_{s}` | 0–4 | pending |
+
+Command template: `experiment=b1_asbs w1=0.5 energy.mu1=[{mu1}] energy.mu2=[{mu2}] hydra.run.dir=results/sep_sweep_b1/d_{d}/seed_{s}`
+
+**Subtotal: 60 runs (12 separations × 5 seeds)**
+
+### 1D. E10 Separation Sweep — B5 Heterogeneous
+
+| # | center_scale | source scale | Output Dir | Seeds | State |
+|---|---|---|---|---|---|
+| 23 | 2 | 3 | `results/sep_sweep_b5/cs_2/seed_{s}` | 0–4 | pending |
+| 24 | 3 | 4 | `results/sep_sweep_b5/cs_3/seed_{s}` | 0–4 | pending |
+| 25 | 4 | 5 | `results/sep_sweep_b5/cs_4/seed_{s}` | 0–4 | pending |
+| 26 | 5 | 6 | `results/sep_sweep_b5/cs_5/seed_{s}` | 0–4 | pending |
+| 27 | 7 | 8 | `results/sep_sweep_b5/cs_7/seed_{s}` | 0–4 | pending |
+| 28 | 10 | 11 | `results/sep_sweep_b5/cs_10/seed_{s}` | 0–4 | pending |
+
+Command template: `experiment=b5_asbs center_scale={cs} scale={cs+1} hydra.run.dir=results/sep_sweep_b5/cs_{cs}/seed_{s}`
+
+**Subtotal: 30 runs (6 scales × 5 seeds)**
+
+### 1E. E11 Müller-Brown Temperature Sweep
+
+| # | β | Output Dir | Seeds | State |
 |---|---|---|---|---|
-| 1 | `b1_asbs` (80/20 split) | 0,1,2 | `experiment=b1_asbs` | pending |
-| 2 | `b2_asbs` (β=0.01) | 0,1,2 | `experiment=b2_asbs beta=0.01` | pending |
-| 3 | `b3_asbs` (γ=5) | 0,1,2 | `experiment=b3_asbs` | pending |
-| 4 | `b4_asbs` | 0,1,2 | `experiment=b4_asbs` | pending |
-| 5 | `b5_asbs` | 0,1,2 | `experiment=b5_asbs` | pending |
-| 6 | `b6_asbs` | 0,1,2 | `experiment=b6_asbs` | pending |
-| 7 | `b7_asbs` (κ3=8) | 0,1,2 | `experiment=b7_asbs` | pending |
-| 8 | `b8_asbs` (LJ3) | 0,1,2 | `experiment=b8_asbs` | pending |
+| 29 | 0.005 | `results/e11_sweep/beta_0.005/seed_{s}` | 0–4 | pending |
+| 30 | 0.01 | `results/e11_sweep/beta_0.01/seed_{s}` | 0–4 | pending |
+| 31 | 0.02 | `results/e11_sweep/beta_0.02/seed_{s}` | 0–4 | pending |
+| 32 | 0.05 | `results/e11_sweep/beta_0.05/seed_{s}` | 0–4 | pending |
+| 33 | 0.1 | `results/e11_sweep/beta_0.1/seed_{s}` | 0–4 | pending |
+| 34 | 0.2 | `results/e11_sweep/beta_0.2/seed_{s}` | 0–4 | pending |
 
----
+Command template: `experiment=b2_asbs beta={b} hydra.run.dir=results/e11_sweep/beta_{b}/seed_{s}`
 
-## Sweep Experiments
+**Subtotal: 30 runs (6 β × 5 seeds)**
 
-### E7: Phase Portrait (pitchfork + ternary)
+### 1F. E13 Metastable Survival Sweep
 
-| # | Description | Seeds | Command | State |
+| # | κ₃ | Output Dir | Seeds | State |
 |---|---|---|---|---|
-| 9 | B1 symmetric (w1=0.5, d=8) | 0–29 | `experiment=b1_asbs w1=0.5` | pending |
-| 10 | B7 (κ1=20, κ3=8) | 0–19 | `experiment=b7_asbs` | pending |
+| 35 | 4 | `results/e13_sweep/kappa3_4/seed_{s}` | 0–4 | pending |
+| 36 | 6 | `results/e13_sweep/kappa3_6/seed_{s}` | 0–4 | pending |
+| 37 | 8 | `results/e13_sweep/kappa3_8/seed_{s}` | 0–4 | pending |
+| 38 | 10 | `results/e13_sweep/kappa3_10/seed_{s}` | 0–4 | pending |
+| 39 | 12 | `results/e13_sweep/kappa3_12/seed_{s}` | 0–4 | pending |
+| 40 | 14 | `results/e13_sweep/kappa3_14/seed_{s}` | 0–4 | pending |
+| 41 | 16 | `results/e13_sweep/kappa3_16/seed_{s}` | 0–4 | pending |
+| 42 | 18 | `results/e13_sweep/kappa3_18/seed_{s}` | 0–4 | pending |
+| 43 | 20 | `results/e13_sweep/kappa3_20/seed_{s}` | 0–4 | pending |
 
-### E8: Jacobian Threshold (symmetric 2-mode, separation sweep)
+Command template: `experiment=b7_asbs kappa3={k} hydra.run.dir=results/e13_sweep/kappa3_{k}/seed_{s}`
 
-| # | Description | d | Seeds | Command | State |
-|---|---|---|---|---|---|
-| 11 | d=3 | 3 | 0–9 | `experiment=b1_asbs w1=0.5 energy.mu1=[-1.5,0] energy.mu2=[1.5,0]` | pending |
-| 12 | d=5 | 5 | 0–9 | `experiment=b1_asbs w1=0.5 energy.mu1=[-2.5,0] energy.mu2=[2.5,0]` | pending |
-| 13 | d=7 | 7 | 0–9 | `experiment=b1_asbs w1=0.5 energy.mu1=[-3.5,0] energy.mu2=[3.5,0]` | pending |
-| 14 | d=9 | 9 | 0–9 | `experiment=b1_asbs w1=0.5 energy.mu1=[-4.5,0] energy.mu2=[4.5,0]` | pending |
-| 15 | d=12 | 12 | 0–9 | `experiment=b1_asbs w1=0.5 energy.mu1=[-6,0] energy.mu2=[6,0]` | pending |
-| 16 | d=15 | 15 | 0–9 | `experiment=b1_asbs w1=0.5 energy.mu1=[-7.5,0] energy.mu2=[7.5,0]` | pending |
-| 17 | d=20 | 20 | 0–9 | `experiment=b1_asbs w1=0.5 energy.mu1=[-10,0] energy.mu2=[10,0]` | pending |
-
-### E11: Müller-Brown Temperature Sweep
-
-| # | Description | β | Seeds | Command | State |
-|---|---|---|---|---|---|
-| 18 | β=0.005 | 0.005 | 0–4 | `experiment=b2_asbs beta=0.005` | pending |
-| 19 | β=0.01 | 0.01 | 0–4 | `experiment=b2_asbs beta=0.01` | pending |
-| 20 | β=0.02 | 0.02 | 0–4 | `experiment=b2_asbs beta=0.02` | pending |
-| 21 | β=0.05 | 0.05 | 0–4 | `experiment=b2_asbs beta=0.05` | pending |
-| 22 | β=0.1 | 0.1 | 0–4 | `experiment=b2_asbs beta=0.1` | pending |
-| 23 | β=0.2 | 0.2 | 0–4 | `experiment=b2_asbs beta=0.2` | pending |
-
-### E13: Metastable Survival (κ₃ sweep)
-
-| # | Description | κ₃ | Seeds | Command | State |
-|---|---|---|---|---|---|
-| 24 | κ₃=4 | 4 | 0–19 | `experiment=b7_asbs kappa3=4` | pending |
-| 25 | κ₃=6 | 6 | 0–19 | `experiment=b7_asbs kappa3=6` | pending |
-| 26 | κ₃=8 | 8 | 0–19 | `experiment=b7_asbs kappa3=8` | pending |
-| 27 | κ₃=10 | 10 | 0–19 | `experiment=b7_asbs kappa3=10` | pending |
-| 28 | κ₃=12 | 12 | 0–19 | `experiment=b7_asbs kappa3=12` | pending |
-| 29 | κ₃=14 | 14 | 0–19 | `experiment=b7_asbs kappa3=14` | pending |
-| 30 | κ₃=16 | 16 | 0–19 | `experiment=b7_asbs kappa3=16` | pending |
-| 31 | κ₃=18 | 18 | 0–19 | `experiment=b7_asbs kappa3=18` | pending |
-| 32 | κ₃=20 | 20 | 0–19 | `experiment=b7_asbs kappa3=20` | pending |
-
-### E10: Separation Sweep — B1 (symmetric)
-
-| # | Description | d | Seeds | Command | State |
-|---|---|---|---|---|---|
-| 33 | d=2 | 2 | 0–9 | `experiment=b1_asbs w1=0.5 energy.mu1=[-1,0] energy.mu2=[1,0]` | pending |
-| 34 | d=3 | 3 | 0–9 | (same as E8 #11) | pending |
-| 35 | d=4 | 4 | 0–9 | `experiment=b1_asbs w1=0.5 energy.mu1=[-2,0] energy.mu2=[2,0]` | pending |
-| 36 | d=5 | 5 | 0–9 | (same as E8 #12) | pending |
-| 37 | d=6 | 6 | 0–9 | `experiment=b1_asbs w1=0.5 energy.mu1=[-3,0] energy.mu2=[3,0]` | pending |
-| 38 | d=8 | 8 | 0–9 | `experiment=b1_asbs w1=0.5 energy.mu1=[-4,0] energy.mu2=[4,0]` | pending |
-| 39 | d=10 | 10 | 0–9 | `experiment=b1_asbs w1=0.5 energy.mu1=[-5,0] energy.mu2=[5,0]` | pending |
-
-**Note:** E8 and E10 share runs for d={3,5,7,9,12,15,20}. Only d={2,4,6,8,10} are E10-only.
-
-### E10: Separation Sweep — B5 (heterogeneous)
-
-| # | Description | center_scale | Seeds | Command | State |
-|---|---|---|---|---|---|
-| 40 | cs=2 | 2 | 0–9 | `experiment=b5_asbs center_scale=2 scale=3` | pending |
-| 41 | cs=3 | 3 | 0–9 | `experiment=b5_asbs center_scale=3 scale=4` | pending |
-| 42 | cs=4 | 4 | 0–9 | `experiment=b5_asbs center_scale=4 scale=5` | pending |
-| 43 | cs=5 | 5 | 0–9 | (same as base #5) | pending |
-| 44 | cs=7 | 7 | 0–9 | `experiment=b5_asbs center_scale=7 scale=8` | pending |
-| 45 | cs=10 | 10 | 0–9 | `experiment=b5_asbs center_scale=10 scale=11` | pending |
+**Subtotal: 45 runs (9 κ₃ × 5 seeds)**
 
 ---
 
-## Total Run Count
+## Part 2: Post-Hoc Evaluation (no training needed)
 
-| Category | Unique Runs | GPU-hours estimate (2D ≈ 40s/ep × 2000 ep ≈ 22h each) |
-|---|---|---|
-| Base benchmarks (8 configs × 3 seeds) | 24 | ~528 GPU-h |
-| E7 pitchfork (30 seeds B1 + 20 seeds B7) | 50 | ~1100 GPU-h |
-| E8 Jacobian sweep (7 separations × 10 seeds) | 70 | ~1540 GPU-h |
-| E11 MB sweep (6 β × 5 seeds) | 30 | ~660 GPU-h |
-| E13 metastable sweep (9 κ₃ × 20 seeds) | 180 | ~3960 GPU-h |
-| E10 B1 sweep (5 new d × 10 seeds) | 50 | ~1100 GPU-h |
-| E10 B5 sweep (5 new cs × 10 seeds) | 50 | ~1100 GPU-h |
-| **Total (deduped)** | **~420** | **~9240 GPU-h** |
+All of these read checkpoints from Part 1 runs. Run after training + reconstruction.
 
-**Note:** These estimates assume 2D benchmarks. B8 (LJ3, 6D) may be slower. The E8/E10 overlap saves ~50 runs. With 2× A100 running 2 jobs in parallel, wall-clock ≈ 4620 hours ≈ 193 days. **This needs parallelization across multiple servers.**
+| Eval | What it produces | Reads from | Script |
+|------|-----------------|------------|--------|
+| E1: Mode tracking | α_k vs epoch curves, B6 heatmap | All base runs (1A) | `evaluation/fig_e1_mode_tracking.py` |
+| E2: η_k heatmaps | Learned vs oracle regression weights | B3, B7 checkpoints | `evaluation/fig_e2_heatmaps.py` |
+| E3: Loss decomposition | V_intra + V_inter stacked area | B1, B5, B7 checkpoints | `evaluation/fig_e3_loss_decomp.py` |
+| E4: Controller field | Quiver plots + deficiency | B1, B3, B7 checkpoints | `evaluation/fig_e4_controller.py` |
+| E5: Terminal density | KDE contours vs target, B6 scatter | All base checkpoints | `evaluation/fig_e5_density.py` |
+| E6: Trajectories | Spaghetti plots at multiple epochs | B1, B3, B7 checkpoints | `evaluation/fig_e6_trajectories.py` |
+| E7: Phase portrait | Pitchfork (B1) + ternary (B7) | E7 multi-seed runs (1B) | `evaluation/fig_e7_phase_portrait.py` |
+| E8: Jacobian threshold | J₁₁ vs ρ_sep + collapse probability | Sep sweep (1C) | `evaluation/fig_e8_jacobian.py` |
+| E9: KL decomposition | KL(α‖w), TV, dead modes vs epoch | B1, B5, B6 tracking | `evaluation/fig_e9_kl.py` |
+| E10: Separation sweep | Collapse prob + time-to-collapse | Sep sweep B1 (1C) + B5 (1D) | `evaluation/fig_e10_separation.py` |
+| E11: Temperature sweep | Per-β panels + summary | MB sweep (1E) | `evaluation/fig_e11_temperature.py` |
+| E12: Death cascade | Survival curve, death order, grid snapshots | B6 tracking | `evaluation/fig_e12_cascade.py` |
+| E13: Metastable survival | Survival prob + α₃/w₃ vs depth ratio | κ₃ sweep (1F) | `evaluation/fig_e13_metastable.py` |
+| Tables | LaTeX summary tables | All tracking files | `evaluation/tables.py` |
 
----
-
-## Post-Training Steps
-
-| Step | Command | State |
-|---|---|---|
-| Reconstruct tracking (all runs) | `python scripts/reconstruct_tracking.py --results-dir results --recursive --n-samples 10000` | pending |
-| Generate all figures | `python evaluation/run_all.py` | pending |
-| Generate tables | `python evaluation/run_all.py --tables-only` | pending |
+**Command:** `python evaluation/run_all.py` (runs all of the above)
 
 ---
 
-## Dedup Notes
+## Summary
 
-The following runs can be shared across experiments:
-- E7/B7 seeds 0–2 overlap with base benchmark #7
-- E8 d={3,5,7,9,12,15,20} overlap with E10/B1 for those separations
-- E13 κ₃=8 seeds 0–2 overlap with base benchmark #7
-- E10/B5 cs=5 seeds 0–2 overlap with base benchmark #5
+| Part | Runs | Status |
+|------|------|--------|
+| 1A: Base benchmarks (8 × 3 seeds) | 24 | pending |
+| 1B: E7 multi-seed (30 + 20) | 50 | pending |
+| 1C: Separation sweep B1 (12 × 5 seeds) | 60 | pending |
+| 1D: Separation sweep B5 (6 × 5 seeds) | 30 | pending |
+| 1E: MB temperature sweep (6 × 5 seeds) | 30 | pending |
+| 1F: Metastable κ₃ sweep (9 × 5 seeds) | 45 | pending |
+| **Total training runs** | **239** | |
+| Post-hoc reconstruction | 1 command | pending |
+| Evaluation + figures | 1 command | pending |
 
-Plan sweep output directories carefully to avoid redundant runs:
-- E8 + E10/B1 → `results/e8_sweep/d_{d}/seed_{s}/` (shared)
-- E13 → `results/e13_sweep/kappa3_{k}/seed_{s}/`
-- E11 → `results/e11_sweep/beta_{b}/seed_{s}/`
-- E10/B5 → `results/e10_b5_sweep/cs_{c}/seed_{s}/`
+Estimated GPU-hours: 239 runs × ~17h each (1500 ep × 40s/ep) ≈ **4,063 GPU-h**
+With 2× A100 (2 parallel): ~2,032h wall-clock ≈ **85 days on this server**.
