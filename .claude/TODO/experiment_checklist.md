@@ -69,8 +69,8 @@ Command template: `experiment=b1_asbs w1=0.5 energy.mu1=[{mu1}] energy.mu2=[{mu2
 | 24 | 3 | 4 | `results/sep_sweep_b5/cs_3/seed_{s}` | 0–4 | done |
 | 25 | 4 | 5 | `results/sep_sweep_b5/cs_4/seed_{s}` | 0–4 | done |
 | 26 | 5 | 6 | `results/sep_sweep_b5/cs_5/seed_{s}` | 0–4 | done |
-| 27 | 7 | 8 | `results/sep_sweep_b5/cs_7/seed_{s}` | 0–4 | running |
-| 28 | 10 | 11 | `results/sep_sweep_b5/cs_10/seed_{s}` | 0–4 | running |
+| 27 | 7 | 8 | `results/sep_sweep_b5/cs_7/seed_{s}` | 0–4 | done |
+| 28 | 10 | 11 | `results/sep_sweep_b5/cs_10/seed_{s}` | 0–4 | done |
 
 Command template: `experiment=b5_asbs center_scale={cs} scale={cs+1} hydra.run.dir=results/sep_sweep_b5/cs_{cs}/seed_{s}`
 
@@ -80,12 +80,12 @@ Command template: `experiment=b5_asbs center_scale={cs} scale={cs+1} hydra.run.d
 
 | # | β | Output Dir | Seeds | State |
 |---|---|---|---|---|
-| 29 | 0.005 | `results/e11_sweep/beta_0.005/seed_{s}` | 0–4 | running |
-| 30 | 0.01 | `results/e11_sweep/beta_0.01/seed_{s}` | 0–4 | running |
-| 31 | 0.02 | `results/e11_sweep/beta_0.02/seed_{s}` | 0–4 | pending |
-| 32 | 0.05 | `results/e11_sweep/beta_0.05/seed_{s}` | 0–4 | pending |
-| 33 | 0.1 | `results/e11_sweep/beta_0.1/seed_{s}` | 0–4 | pending |
-| 34 | 0.2 | `results/e11_sweep/beta_0.2/seed_{s}` | 0–4 | pending |
+| 29 | 0.005 | `results/e11_sweep/beta_0.005/seed_{s}` | 0–4 | done |
+| 30 | 0.01 | `results/e11_sweep/beta_0.01/seed_{s}` | 0–4 | done |
+| 31 | 0.02 | `results/e11_sweep/beta_0.02/seed_{s}` | 0–4 | running |
+| 32 | 0.05 | `results/e11_sweep/beta_0.05/seed_{s}` | 0–4 | running |
+| 33 | 0.1 | `results/e11_sweep/beta_0.1/seed_{s}` | 0–4 | running |
+| 34 | 0.2 | `results/e11_sweep/beta_0.2/seed_{s}` | 0–4 | running |
 
 Command template: `experiment=b2_asbs beta={b} hydra.run.dir=results/e11_sweep/beta_{b}/seed_{s}`
 
@@ -143,8 +143,8 @@ All of these read checkpoints from Part 1 runs. Run after training + reconstruct
 | 1A: Base benchmarks (8 × 3 seeds) | 24 | done |
 | 1B: E7 multi-seed (30 + 20) | 50 | done |
 | 1C: Separation sweep B1 (12 × 5 seeds) | 60 | done |
-| 1D: Separation sweep B5 (6 × 5 seeds) | 30 | 20 done, 10 running |
-| 1E: MB temperature sweep (6 × 5 seeds) | 30 | 10 running, 20 pending |
+| 1D: Separation sweep B5 (6 × 5 seeds) | 30 | done |
+| 1E: MB temperature sweep (6 × 5 seeds) | 30 | 10 done, 20 running |
 | 1F: Metastable κ₃ sweep (9 × 5 seeds) | 45 | pending |
 | **Total training runs** | **239** | |
 | Post-hoc reconstruction | 1 command | pending |
