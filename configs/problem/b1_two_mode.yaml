@@ -8,6 +8,8 @@ energy:
   dim: ${dim}
   w1: ${w1}
   sigma: ${source_sigma}
+  mu1: ${mu1}
+  mu2: ${mu2}
 
 evaluator:
   _target_: adjoint_samplers.components.synthetic_2d_evaluator.Synthetic2DEvaluator

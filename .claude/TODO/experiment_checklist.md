@@ -34,7 +34,7 @@ Extra seeds beyond the base 3. Needed by: E7
 | # | Benchmark | Config | Params | Output Dir | Seeds | State |
 |---|---|---|---|---|---|---|
 | 9 | B1 symmetric | `b1_asbs` | `w1=0.5` | `results/e7_b1_sym/seed_{s}` | 0–29 | done |
-| 10 | B7 | `b7_asbs` | default | `results/e7_b7/seed_{s}` | 0–19 | s0–5 done, s6–19 running |
+| 10 | B7 | `b7_asbs` | default | `results/e7_b7/seed_{s}` | 0–19 | done |
 
 **Subtotal: 50 runs**
 
@@ -44,12 +44,12 @@ Shared between E8 (Jacobian threshold) and E10 (separation sweep). All use `w1=0
 
 | # | d | mu1 | mu2 | Output Dir | Seeds | State |
 |---|---|---|---|---|---|---|
-| 11 | 2 | [-1, 0] | [1, 0] | `results/sep_sweep_b1/d_2/seed_{s}` | 0–4 | s0 running, s1–4 pending |
-| 12 | 3 | [-1.5, 0] | [1.5, 0] | `results/sep_sweep_b1/d_3/seed_{s}` | 0–4 | s0 running, s1–4 pending |
-| 13 | 4 | [-2, 0] | [2, 0] | `results/sep_sweep_b1/d_4/seed_{s}` | 0–4 | s0 running, s1–4 pending |
-| 14 | 5 | [-2.5, 0] | [2.5, 0] | `results/sep_sweep_b1/d_5/seed_{s}` | 0–4 | s0 running, s1–4 pending |
-| 15 | 6 | [-3, 0] | [3, 0] | `results/sep_sweep_b1/d_6/seed_{s}` | 0–4 | pending |
-| 16 | 7 | [-3.5, 0] | [3.5, 0] | `results/sep_sweep_b1/d_7/seed_{s}` | 0–4 | pending |
+| 11 | 2 | [-1, 0] | [1, 0] | `results/sep_sweep_b1/d_2/seed_{s}` | 0–4 | s0 done, s1–4 running |
+| 12 | 3 | [-1.5, 0] | [1.5, 0] | `results/sep_sweep_b1/d_3/seed_{s}` | 0–4 | s0 done, s1–4 running |
+| 13 | 4 | [-2, 0] | [2, 0] | `results/sep_sweep_b1/d_4/seed_{s}` | 0–4 | s0 done, s1–4 running |
+| 14 | 5 | [-2.5, 0] | [2.5, 0] | `results/sep_sweep_b1/d_5/seed_{s}` | 0–4 | s0 done, s1–4 running |
+| 15 | 6 | [-3, 0] | [3, 0] | `results/sep_sweep_b1/d_6/seed_{s}` | 0–4 | running |
+| 16 | 7 | [-3.5, 0] | [3.5, 0] | `results/sep_sweep_b1/d_7/seed_{s}` | 0–4 | running |
 | 17 | 8 | [-4, 0] | [4, 0] | `results/sep_sweep_b1/d_8/seed_{s}` | 0–4 | pending |
 | 18 | 9 | [-4.5, 0] | [4.5, 0] | `results/sep_sweep_b1/d_9/seed_{s}` | 0–4 | pending |
 | 19 | 10 | [-5, 0] | [5, 0] | `results/sep_sweep_b1/d_10/seed_{s}` | 0–4 | pending |

@@ -17,6 +17,8 @@ exp_name: b1_asbs
 # === problem params ===
 w1: 0.8
 source_sigma: 1.0
+mu1: [-4.0, 0.0]
+mu2: [4.0, 0.0]
 
 # === source ===
 scale: 5
