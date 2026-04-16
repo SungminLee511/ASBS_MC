@@ -65,10 +65,10 @@ Command template: `experiment=b1_asbs w1=0.5 energy.mu1=[{mu1}] energy.mu2=[{mu2
 
 | # | center_scale | source scale | Output Dir | Seeds | State |
 |---|---|---|---|---|---|
-| 23 | 2 | 3 | `results/sep_sweep_b5/cs_2/seed_{s}` | 0–4 | pending |
-| 24 | 3 | 4 | `results/sep_sweep_b5/cs_3/seed_{s}` | 0–4 | pending |
-| 25 | 4 | 5 | `results/sep_sweep_b5/cs_4/seed_{s}` | 0–4 | pending |
-| 26 | 5 | 6 | `results/sep_sweep_b5/cs_5/seed_{s}` | 0–4 | pending |
+| 23 | 2 | 3 | `results/sep_sweep_b5/cs_2/seed_{s}` | 0–4 | running |
+| 24 | 3 | 4 | `results/sep_sweep_b5/cs_3/seed_{s}` | 0–4 | running |
+| 25 | 4 | 5 | `results/sep_sweep_b5/cs_4/seed_{s}` | 0–4 | running |
+| 26 | 5 | 6 | `results/sep_sweep_b5/cs_5/seed_{s}` | 0–4 | running |
 | 27 | 7 | 8 | `results/sep_sweep_b5/cs_7/seed_{s}` | 0–4 | pending |
 | 28 | 10 | 11 | `results/sep_sweep_b5/cs_10/seed_{s}` | 0–4 | pending |
 
@@ -143,7 +143,7 @@ All of these read checkpoints from Part 1 runs. Run after training + reconstruct
 | 1A: Base benchmarks (8 × 3 seeds) | 24 | done |
 | 1B: E7 multi-seed (30 + 20) | 50 | done |
 | 1C: Separation sweep B1 (12 × 5 seeds) | 60 | done |
-| 1D: Separation sweep B5 (6 × 5 seeds) | 30 | running |
+| 1D: Separation sweep B5 (6 × 5 seeds) | 30 | 20 running, 10 pending |
 | 1E: MB temperature sweep (6 × 5 seeds) | 30 | pending |
 | 1F: Metastable κ₃ sweep (9 × 5 seeds) | 45 | pending |
 | **Total training runs** | **239** | |
