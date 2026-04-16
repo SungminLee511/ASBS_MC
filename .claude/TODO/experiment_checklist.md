@@ -33,8 +33,8 @@ Extra seeds beyond the base 3. Needed by: E7
 
 | # | Benchmark | Config | Params | Output Dir | Seeds | State |
 |---|---|---|---|---|---|---|
-| 9 | B1 symmetric | `b1_asbs` | `w1=0.5` | `results/e7_b1_sym/seed_{s}` | 0–29 | s0–17 running, s18–29 pending |
-| 10 | B7 | `b7_asbs` | default | `results/e7_b7/seed_{s}` | 0–19 | pending |
+| 9 | B1 symmetric | `b1_asbs` | `w1=0.5` | `results/e7_b1_sym/seed_{s}` | 0–29 | s0–17 done, s18–29 running |
+| 10 | B7 | `b7_asbs` | default | `results/e7_b7/seed_{s}` | 0–19 | s0–5 running, s6–19 pending |
 
 **Subtotal: 50 runs**
 
