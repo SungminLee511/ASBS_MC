@@ -12,7 +12,7 @@
 
 set -euo pipefail
 CONDA_PATH="/home/sky/miniconda3/envs/adjoint_samplers/bin/python"
-GPU=1
+GPU=0
 START=$(date +%s)
 
 echo "=========================================="

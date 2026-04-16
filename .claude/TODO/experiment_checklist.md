@@ -82,10 +82,10 @@ Command template: `experiment=b5_asbs center_scale={cs} scale={cs+1} hydra.run.d
 |---|---|---|---|---|
 | 29 | 0.005 | `results/e11_sweep/beta_0.005/seed_{s}` | 0–4 | done |
 | 30 | 0.01 | `results/e11_sweep/beta_0.01/seed_{s}` | 0–4 | done |
-| 31 | 0.02 | `results/e11_sweep/beta_0.02/seed_{s}` | 0–4 | running |
-| 32 | 0.05 | `results/e11_sweep/beta_0.05/seed_{s}` | 0–4 | running |
-| 33 | 0.1 | `results/e11_sweep/beta_0.1/seed_{s}` | 0–4 | running |
-| 34 | 0.2 | `results/e11_sweep/beta_0.2/seed_{s}` | 0–4 | running |
+| 31 | 0.02 | `results/e11_sweep/beta_0.02/seed_{s}` | 0–4 | done |
+| 32 | 0.05 | `results/e11_sweep/beta_0.05/seed_{s}` | 0–4 | done |
+| 33 | 0.1 | `results/e11_sweep/beta_0.1/seed_{s}` | 0–4 | done |
+| 34 | 0.2 | `results/e11_sweep/beta_0.2/seed_{s}` | 0–4 | done |
 
 Command template: `experiment=b2_asbs beta={b} hydra.run.dir=results/e11_sweep/beta_{b}/seed_{s}`
 
@@ -95,15 +95,15 @@ Command template: `experiment=b2_asbs beta={b} hydra.run.dir=results/e11_sweep/b
 
 | # | κ₃ | Output Dir | Seeds | State |
 |---|---|---|---|---|
-| 35 | 4 | `results/e13_sweep/kappa3_4/seed_{s}` | 0–4 | running |
-| 36 | 6 | `results/e13_sweep/kappa3_6/seed_{s}` | 0–4 | running |
-| 37 | 8 | `results/e13_sweep/kappa3_8/seed_{s}` | 0–4 | queued |
-| 38 | 10 | `results/e13_sweep/kappa3_10/seed_{s}` | 0–4 | queued |
-| 39 | 12 | `results/e13_sweep/kappa3_12/seed_{s}` | 0–4 | queued |
-| 40 | 14 | `results/e13_sweep/kappa3_14/seed_{s}` | 0–4 | queued |
-| 41 | 16 | `results/e13_sweep/kappa3_16/seed_{s}` | 0–4 | queued |
-| 42 | 18 | `results/e13_sweep/kappa3_18/seed_{s}` | 0–4 | queued |
-| 43 | 20 | `results/e13_sweep/kappa3_20/seed_{s}` | 0–4 | queued |
+| 35 | 4 | `results/e13_sweep/kappa3_4/seed_{s}` | 0–4 | done |
+| 36 | 6 | `results/e13_sweep/kappa3_6/seed_{s}` | 0–4 | done |
+| 37 | 8 | `results/e13_sweep/kappa3_8/seed_{s}` | 0–4 | done |
+| 38 | 10 | `results/e13_sweep/kappa3_10/seed_{s}` | 0–4 | done |
+| 39 | 12 | `results/e13_sweep/kappa3_12/seed_{s}` | 0–4 | done |
+| 40 | 14 | `results/e13_sweep/kappa3_14/seed_{s}` | 0–4 | done |
+| 41 | 16 | `results/e13_sweep/kappa3_16/seed_{s}` | 0–4 | done |
+| 42 | 18 | `results/e13_sweep/kappa3_18/seed_{s}` | 0–4 | done |
+| 43 | 20 | `results/e13_sweep/kappa3_20/seed_{s}` | 0–4 | done |
 
 Command template: `experiment=b7_asbs kappa3={k} hydra.run.dir=results/e13_sweep/kappa3_{k}/seed_{s}`
 
@@ -145,10 +145,10 @@ All of these read checkpoints from Part 1 runs. Run after training + reconstruct
 | 1C: Separation sweep B1 (12 × 5 seeds) | 60 | done |
 | 1D: Separation sweep B5 (6 × 5 seeds) | 30 | done |
 | 1E: MB temperature sweep (6 × 5 seeds) | 30 | done |
-| 1F: Metastable κ₃ sweep (9 × 5 seeds) | 45 | running (queued, 10/batch on GPU 1) |
-| **Total training runs** | **239** | |
-| Post-hoc reconstruction | 1 command | pending |
-| Evaluation + figures | 1 command | pending |
+| 1F: Metastable κ₃ sweep (9 × 5 seeds) | 45 | done |
+| **Total training runs** | **239** | **done** |
+| Post-hoc reconstruction | 164 runs | done |
+| Evaluation + figures | E1–E12 + tables | done |
 
 Estimated GPU-hours: 239 runs × ~17h each (1500 ep × 40s/ep) ≈ **4,063 GPU-h**
 With 2× A100 (2 parallel): ~2,032h wall-clock ≈ **85 days on this server**.
