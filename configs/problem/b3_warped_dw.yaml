@@ -8,4 +8,7 @@ energy:
   dim: ${dim}
   gamma: ${gamma}
 
-evaluator: null
+evaluator:
+  _target_: adjoint_samplers.components.synthetic_2d_evaluator.Synthetic2DEvaluator
+  n_ref_samples: 50000
+  grid_size: 500

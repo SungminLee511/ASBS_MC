@@ -90,6 +90,7 @@ ASBS_MC/
 │   ├── e5_terminal_density.py            # E5: KDE contours vs target density (NEW)
 │   ├── e12_death_cascade.py              # E12: full death cascade analysis (NEW)
 │   ├── e1_lj3_permutations.py            # E1/B8: LJ3 permutation counting (NEW)
+│   ├── reconstruct_tracking.py           # Post-hoc: rebuild mode_tracking.jsonl from ckpts (NEW)
 │   ├── demo.sh, dw4.sh, lj13.sh, lj55.sh, download.sh  # (original)
 ├── evaluation/                           # Post-hoc figure/table generation
 │   ├── run_all.py                        # Master script: generates all figures + tables
@@ -143,10 +144,20 @@ Properties: `mode_centers` (tensor of centers), `mode_weights` (target weights) 
 
 **Note on B2 (Müller-Brown):** Raw energy values are in the hundreds, so the interesting β range is {0.005–0.2}, not {1–10}. At β≥0.5, mode 0 dominates completely.
 
-## Mode Tracking
+## Evaluation & Mode Tracking
 
-`train.py` automatically logs mode weights when the energy has `mode_centers` and `mode_weights` properties.
-Output: `mode_tracking.jsonl` (one JSON line per eval epoch) with fields: `epoch, stage, loss, alpha, target_w, kl, tv, alive_modes`.
+**Evaluator:** `Synthetic2DEvaluator` (new file `synthetic_2d_evaluator.py`) — generates reference samples via importance sampling at init, then computes energy W2, marginal W2, sliced W2, mode weights, KL, TV, alive modes, and density comparison figures.
+
+**During training:** `train.py` logs mode weights and runs the evaluator at `eval_freq` intervals. Set `eval_freq=99999` to skip eval during training for maximum speed.
+
+**Post-hoc reconstruction:** `scripts/reconstruct_tracking.py` rebuilds `mode_tracking.jsonl` + `eval_metrics.jsonl` from saved checkpoints. Use after training with eval disabled:
+```bash
+conda run -n $ENV python scripts/reconstruct_tracking.py --results-dir results --recursive --n-samples 10000
+```
+
+Output files per run:
+- `mode_tracking.jsonl` — one JSON line per epoch: `epoch, alpha, target_w, kl, tv, alive_modes`
+- `eval_metrics.jsonl` — one JSON line per epoch: `epoch, mean_energy, std_energy, median_energy`
 
 ## Experiment Scripts (Tier 1)
 
@@ -236,6 +247,7 @@ Output: `figures/*.pdf` and `tables/*.tex`
 3. **`data/` contains reference test splits** — needed for evaluation, do not delete.
 4. **Hydra configs override via CLI** — e.g. `python train.py experiment=b1_asbs w1=0.9 seed=42`
 5. **B1–B7 use FourierMLP + VESDE** (flat 2D), **B8 uses FourierMLP + VESDE** (LJ3 too small for EGNN/harmonic source).
-6. **Mode tracking only fires for energies with `mode_centers` AND `mode_weights`** — B4 (Neal's Funnel) has neither (continuous, no discrete modes).
+6. **Mode tracking only fires for energies with `mode_centers` AND `mode_weights`** — B4 (Neal's Funnel) has no discrete modes, so mode tracking logs energy stats only.
+7. **All B1–B7 now have `Synthetic2DEvaluator`** — generates 50k reference samples at init via grid importance sampling. B4 has no mode metrics but still gets energy W2 and density figures.
 7. **Experiment scripts have `launch` and `plot` subcommands** — `launch` spawns training processes, `plot` reads `mode_tracking.jsonl` files. Override `hydra.run.dir` to control output location.
 8. **Müller-Brown β range** — interesting regime is β∈{0.005–0.2}. At β≥0.5, one mode dominates the entire mass.

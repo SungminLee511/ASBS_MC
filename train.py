@@ -209,6 +209,8 @@ def main(cfg):
 
                         if "hist_img" in eval_dict:
                             eval_dict["hist_img"].save(eval_dir / "gen.png")
+                        if "density_img" in eval_dict:
+                            eval_dict["density_img"].save(eval_dir / "density.png")
 
                         writer.log(eval_dict, step=epoch)
                     else:
