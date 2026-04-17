@@ -1,10 +1,59 @@
 # Experiment Checklist: Verifying Stability of Collapsed States (v3)
 
 Reference: `Experimental Guide v3: Verifying Stability of Collapsed States.md`
+Seeds: 3 per condition (seeds 0, 1, 2). Up to 1000 epochs per run (prereqs up to 2000).
 
 ---
 
-## Tier 0 — v1 Reinterpretation (No new training; analysis only)
+## Training Run Inventory
+
+### Batch 1 — Baselines & Phase-1 Pretrains (20 runs, launched 2026-04-17)
+
+| # | GPU | Experiment | Seeds | Epochs | Status |
+|---|-----|-----------|-------|--------|--------|
+| 1-3 | 0 | B7 baseline | 0,1,2 | 2000 | 🔄 Running |
+| 4-6 | 0 | B1_sym baseline | 0,1,2 | 2000 | 🔄 Queued |
+| 7-9 | 0 | C2 phase1 mode1 | 0,1,2 | 1000 | 🔄 Queued |
+| 10 | 0 | C2 phase1 mode2 | 0 | 1000 | 🔄 Queued |
+| 11-12 | 1 | C2 phase1 mode2 | 1,2 | 1000 | 🔄 Running |
+| 13-15 | 1 | C2 phase1 mode3 | 0,1,2 | 1000 | 🔄 Queued |
+| 16-18 | 1 | E1 phase1 S12 | 0,1,2 | 1000 | 🔄 Queued |
+| 19-20 | 1 | E1 phase1 S13 | 0,1 | 1000 | 🔄 Queued |
+
+**Unlocks:** B7 baselines → B2, C1, D1, F1, F2. B1_sym → A1, A2, A3. C2p1 → C2p2, E1p2-single.
+
+### Batch 2 — B1 Injection (⭐ most important) + A1 + remaining prereqs (20 runs, auto-queued)
+
+| # | GPU | Experiment | Seeds | Epochs | Status |
+|---|-----|-----------|-------|--------|--------|
+| 1-3 | 0 | B1 inject rho=0.001/M=50 | 0,1,2 | 3000 | ⏳ After batch 1 |
+| 4-6 | 0 | B1 inject rho=0.01/M=50 | 0,1,2 | 3000 | ⏳ After batch 1 |
+| 7-9 | 0 | A1: 2→3 mode switch | 0,1,2 | 2000 | ⏳ After batch 1 |
+| 10 | 0 | E1 phase1 S13 | 2 | 1000 | ⏳ After batch 1 |
+| 11-13 | 1 | B1 inject rho=0.05/M=50 | 0,1,2 | 3000 | ⏳ After batch 1 |
+| 14-16 | 1 | B1 inject rho=0.1/M=50 | 0,1,2 | 3000 | ⏳ After batch 1 |
+| 17-19 | 1 | E1 phase1 S23 | 0,1,2 | 1000 | ⏳ After batch 1 |
+| 20 | 1 | C2 phase2 mode1 | 0 | 2000 | ⏳ After batch 1 |
+
+### Future Batches (not yet launched)
+
+**Batch 3 — Phase-2 experiments + B1 M-sweep + B2:**
+- C2 phase2: 3 modes × 3 seeds = 9 runs (minus the 1 in batch 2) = 8
+- E1 phase2: 6 subsets × 3 seeds = 18 (single-mode reuses C2p1 ckpts)
+- B1 inject M-sweep: M={10,200} × rho=0.05 × 3 seeds = 6
+- B2: sigma={0.001,0.01,0.1,1.0} × 3 seeds = 12
+
+**Batch 4 — Tier 3 sweeps:**
+- A2: d_inject={2,4,6,8,12} × 3 seeds = 15
+- A3: sigma={0.5,0.8,1.5,2.0} × 3 seeds = 12
+- C1: d_init={0.01,0.1,1.0,10.0} × 3 seeds = 12
+- B1 baseline (no inject, extended): 3 seeds = 3
+
+---
+
+## Experiment Families — Status
+
+### Tier 0 — v1 Reinterpretation (No new training; analysis only)
 
 - [ ] **0.1: v1 Reachability as Basin Evidence**
   - Re-analyze B5 (5/5 seeds collapse at center_scale >= 5), B7 (20/20 seeds same ternary pattern), Muller-Brown (beta >= 0.1 mode death)
@@ -28,116 +77,117 @@ Reference: `Experimental Guide v3: Verifying Stability of Collapsed States.md`
 
 ---
 
-## Tier 1 — Direct Stability Tests (Highest priority new experiments)
+### Tier 1 — Direct Stability Tests (Highest priority new experiments)
 
 - [ ] **B1: Dead Mode Revival via Data Injection** ⭐ MOST IMPORTANT
-  - Pretrain ASBS on B7 to convergence (mode 2 dead)
-  - Inject fraction rho in {0.001, 0.01, 0.05, 0.1} of dead-mode samples for M in {10, 50, 200} epochs
-  - Continue normal training for 1000 epochs after injection
-  - Measure alpha_2 decay rate lambda after injection ends
-  - Compare lambda to theoretical J^{S^c S^c} from Proposition D2'
+  - rho sweep (M=50 fixed): rho={0.001, 0.01, 0.05, 0.1} × 3 seeds = **12 runs** → Batch 2 🔄
+  - M sweep (rho=0.05 fixed): M={10, 200} × 3 seeds = **6 runs** → Batch 3
+  - (M=50/rho=0.05 covered in rho sweep above)
+  - Baseline (no inject, 3000 ep): 3 seeds = **3 runs** → Batch 4
+  - **Total: 21 training runs**
 
 - [ ] **A1: Sequential Mode Addition on 2D Gaussian Mixture**
-  - Phase 1: Pretrain on 2-mode GMM (w1=w2=0.5, centers +/-4, sigma=1) to convergence
-  - Phase 2: Switch target to 3-mode (add mode at (0,4), w_k=1/3 each), train 2000 more epochs
-  - Measure alpha_k trajectories, time to discover mode 3, final KL
-  - Baseline: train from scratch on 3-mode target
+  - Phase 1 = B1_sym baselines (batch 1) ✓
+  - Phase 2: 3 seeds = **3 runs** → Batch 2 🔄
+  - **Total: 3 new runs** (phase 1 shared)
 
 - [ ] **C2: Start from Adversarial Collapsed States**
-  - Pretrain B7 on modified target with w1=1 (single-mode)
-  - Switch to true B7 target, continue training
-  - Measure whether alpha_1 stays dominant or transitions to alpha_3-dominant
-  - Tests plurality of stable attractors
+  - Phase 1: 3 modes × 3 seeds = **9 runs** → Batch 1 🔄
+  - Phase 2: 3 modes × 3 seeds = **9 runs** → Batch 2 (1 run) + Batch 3 (8 runs)
+  - **Total: 18 training runs**
 
 ---
 
-## Tier 2 — Quantitative Jacobian Verification
+### Tier 2 — Quantitative Jacobian Verification
 
 - [ ] **D1: Block-by-Block Jacobian Estimation**
-  - At B7 collapsed state, apply perturbation delta_alpha = epsilon * e_j for each mode j
-  - epsilon in {0.001, 0.005, 0.01, 0.02}
-  - Extract J^{SS}, J^{SS^c}, J^{S^c S^c} blocks
-  - Compare to Proposition D2' formulas (within factor 2 = success)
+  - Requires B7 baselines (batch 1)
+  - K modes × 4 epsilon values × 3 seeds = **~36 micro-runs** (short, 1 epoch each)
 
 - [ ] **D2: Spectral Radius Measurement**
-  - From D1's Jacobian, compute eigenvalues
-  - Verify |lambda_max| < 1
+  - Derived from D1 data — no separate training
 
 - [ ] **D3: Multi-Epoch Perturbation Decay**
-  - Inject known perturbation, track ||delta_alpha^(n)|| over many epochs
-  - Fit exponential decay rate r
-  - Compare r to |lambda_max| from D2
+  - 3 seeds × 1 perturbation = **3 runs** → Batch 3
 
 - [ ] **B2: Controller-Level Perturbation**
-  - Pretrain B7 to convergence
-  - Add Gaussian noise sigma_pert in {0.001, 0.01, 0.1, 1.0} to all controller weights
-  - Train 1000 more epochs
-  - Measure recovery time; check if same or different collapsed state
+  - sigma={0.001, 0.01, 0.1, 1.0} × 3 seeds = **12 runs** → Batch 3
+  - Requires B7 baselines (batch 1)
 
 - [ ] **F1: Direct Measurement of Dead Mode Adjoints**
-  - At B7 collapsed state, compute Y_bar_2 for trajectories reaching M_2
-  - Monte Carlo with 10^6 samples
-  - Measure value and variance across seeds
+  - MC estimation at B7 checkpoint — **3 analysis runs** (not training)
 
 - [ ] **F2: Sensitivity of Dead Mode Adjoints**
-  - Perturb controller slightly, measure dY_bar_2/d_alpha_j for each j
-  - Check if bounded (BRA holds) or diverges as epsilon -> 0
+  - Perturbation sensitivity — **~9 analysis runs**
 
 ---
 
-## Tier 3 — Scope and Basin Mapping
+### Tier 3 — Scope and Basin Mapping
 
 - [ ] **A2: Mode Addition with Varying Injection Distance**
-  - Same as A1 but sweep d_inject in {2, 4, 6, 8, 12}
-  - Map basin of attraction in injection-distance space
+  - d_inject={2, 4, 6, 8, 12} × 3 seeds = **15 runs** → Batch 4
+  - Requires B1_sym baselines (batch 1)
 
 - [ ] **A3: Mode Addition with Energy Depth Variation**
-  - Inject new mode with kappa_3 in {4, 8, 16, 32}, distance fixed
-  - Test depth vs. rejection robustness
+  - sigma={0.5, 0.8, 1.5, 2.0} × 3 seeds = **12 runs** → Batch 4
+  - Requires B1_sym baselines (batch 1)
 
 - [ ] **C1: Initialization-to-Collapse Distance Sweep**
-  - Initialize theta_0 = theta* + d_init * xi, d_init in {0.01, 0.1, 1.0, 10.0}
-  - Train 1000 epochs, measure convergence rate and fraction returning to same state
+  - d_init={0.01, 0.1, 1.0, 10.0} × 3 seeds = **12 runs** → Batch 4
+  - Requires B7 baselines (batch 1)
 
 - [ ] **E1: Attractor Enumeration on Small Benchmarks**
-  - B1 asymmetric (80/20) or 3-mode benchmark
-  - For each subset S: pretrain on p_S, switch to full p, check stability
-  - Measure fraction of seeds remaining in S-state per subset
+  - Phase 1: 6 subsets × 3 seeds = **18 runs** (9 single-mode = C2p1, 9 two-mode)
+    - S12 × 3 → Batch 1 🔄
+    - S13 × 3 → Batch 1 (2) + Batch 2 (1) 🔄
+    - S23 × 3 → Batch 2 🔄
+  - Phase 2: 6 subsets × 3 seeds = **18 runs** → Batch 3
+  - **Total: 36 training runs** (9 shared with C2p1)
 
 - [ ] **E2: Transition Threshold Between Collapsed States**
-  - Start at "only mode 1 alive" for B7
-  - Inject mode 2 revival at increasing magnitudes
-  - Find transition threshold — maps separatrix between basins
+  - Magnitude sweep — **~15 runs** → Batch 5+
 
 - [ ] **B3: Bias Injection with Continuous Training**
-  - Pretrain to convergence, inject small asymmetric drift (delta=0.01) during rollouts
-  - Measure how much asymmetry accumulates before being pushed back
+  - 3 seeds = **3 runs** → Batch 5+
 
 ---
 
-## Supplementary Analyses on v1 Data
+### Supplementary Analyses on v1 Data
 
 - [ ] **G1: Empirical Contraction Factor from v1 Trajectories**
-  - Extract late-epoch decay rate from v1 B5, B7, Muller-Brown training curves
-  - Compare to theoretical |lambda_max(J^{(S)})| from Proposition D2'
+  - Analysis only — no training
 
 - [ ] **G2: Jacobian Estimation from Small Fluctuations**
-  - Compute autocorrelation of alpha^(n) in converged v1 runs
-  - Extract autoregression coefficients as Jacobian eigenvalue estimates
-  - Verify modulus < 1
+  - Analysis only — no training
 
 ---
 
-## Summary Table
+## Run Count Summary
 
-| Family | # Experiments | Status |
-|--------|--------------|--------|
-| 0 (v1 reinterpretation) | 5 | Not started |
-| A (mode injection) | 3 | Not started |
-| B (direct perturbation) | 3 | Not started |
-| C (collapsed init) | 2 | Not started |
-| D (Jacobian verification) | 3 | Not started |
-| E (multiple attractors) | 2 | Not started |
-| F (BRA verification) | 2 | Not started |
-| G (v1 supplementary) | 2 | Not started |
-| **Total** | **22** | |
+| Batch | Runs | Epochs (approx) | Content | Status |
+|-------|------|-----------------|---------|--------|
+| 1 | 20 | ~26,000 | Baselines + C2p1 + E1p1 (partial) | 🔄 Running |
+| 2 | 20 | ~48,000 | B1 inject rho-sweep + A1 + E1p1 S23 + C2p2 start | ⏳ Auto-queued |
+| 3 | ~44 | ~70,000 | C2p2 + E1p2 + B1 M-sweep + B2 | Not launched |
+| 4 | ~42 | ~60,000 | A2 + A3 + C1 + B1 baseline | Not launched |
+| 5+ | ~20 | ~30,000 | E2 + B3 + D1/D3 micro-runs | Not launched |
+| **Total** | **~146** | **~234,000** | | |
+
+---
+
+## Logs & Monitoring
+
+```bash
+# Watch live progress
+tail -f logs/gpu0_chain.log
+tail -f logs/gpu1_chain.log
+
+# Check GPU utilization
+nvidia-smi
+
+# Count completed runs
+find results/v3 -name "checkpoint_latest.pt" | wc -l
+
+# Post-hoc reconstruction (after training)
+python scripts/reconstruct_tracking.py --results-dir results/v3 --recursive --n-samples 10000
+```
