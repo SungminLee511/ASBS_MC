@@ -28,9 +28,9 @@ All evaluation is **post-hoc** via `reconstruct_tracking.py`. Training runs use 
 | 1 | Fam B1 | B1-M200 | Dead mode revival: rho=0.05, M=200 | B7 | rho=0.05, M=200 | 5 | 3200 | — | YES | [ ] | [ ] | [ ] |
 | 1 | Fam B1 | B1-ctrl | B7 extended baseline (no injection, 3000 ep) | B7 | — | 5 | 3000 | — | YES | [ ] | [ ] | [ ] |
 | 1 | Fam A | A1 | 2-mode pretrain -> 3-mode switch | k_mode_gmm | 3rd mode at (0,4) | 5 | 2000 | BL-B1s | YES | [~] 3/5 seeds done (batch2) | [ ] | [ ] |
-| 1 | Fam C2 | C2-ph1-m1 | Phase 1: pretrain single-mode at B7 mode 1 (1,0) | k_mode_gmm | K=1, center=(1,0) | 5 | 1000 | — | YES | [~] 2/5 seeds running (batch2) | [ ] | [ ] |
-| 1 | Fam C2 | C2-ph1-m2 | Phase 1: pretrain single-mode at B7 mode 2 (-1,0) | k_mode_gmm | K=1, center=(-1,0) | 5 | 1000 | — | YES | [~] 2/5 seeds running (batch2) | [ ] | [ ] |
-| 1 | Fam C2 | C2-ph1-m3 | Phase 1: pretrain single-mode at B7 mode 3 (0.3,1.5) | k_mode_gmm | K=1, center=(0.3,1.5) | 5 | 1000 | — | YES | [~] 1/5 seeds running (batch2) | [ ] | [ ] |
+| 1 | Fam C2 | C2-ph1-m1 | Phase 1: pretrain single-mode at B7 mode 1 (1,0) | k_mode_gmm | K=1, center=(1,0) | 5 | 1000 | — | YES | [~] 2/5 done, 3/5 running (batch2) | [ ] | [ ] |
+| 1 | Fam C2 | C2-ph1-m2 | Phase 1: pretrain single-mode at B7 mode 2 (-1,0) | k_mode_gmm | K=1, center=(-1,0) | 5 | 1000 | — | YES | [~] 2/5 done, 3/5 running (batch2) | [ ] | [ ] |
+| 1 | Fam C2 | C2-ph1-m3 | Phase 1: pretrain single-mode at B7 mode 3 (0.3,1.5) | k_mode_gmm | K=1, center=(0.3,1.5) | 5 | 1000 | — | YES | [~] 1/5 done, 4/5 running (batch2) | [ ] | [ ] |
 | 1 | Fam C2 | C2-ph2-m1 | Phase 2: resume mode-1 ckpt on true B7 | B7 | — | 5 | 2000 | C2-ph1-m1 | YES | [ ] | [ ] | [ ] |
 | 1 | Fam C2 | C2-ph2-m2 | Phase 2: resume mode-2 ckpt on true B7 | B7 | — | 5 | 2000 | C2-ph1-m2 | YES | [ ] | [ ] | [ ] |
 | 1 | Fam C2 | C2-ph2-m3 | Phase 2: resume mode-3 ckpt on true B7 | B7 | — | 5 | 2000 | C2-ph1-m3 | YES | [ ] | [ ] | [ ] |
@@ -56,9 +56,9 @@ All evaluation is **post-hoc** via `reconstruct_tracking.py`. Training runs use 
 | 3 | Fam C1 | C1-d0.1 | Init distance sweep: d_init=0.1 | B7 | sigma=0.1 | 5 | 3000 | BL-B7 | YES | [ ] | [ ] | [ ] |
 | 3 | Fam C1 | C1-d1.0 | Init distance sweep: d_init=1.0 | B7 | sigma=1.0 | 5 | 3000 | BL-B7 | YES | [ ] | [ ] | [ ] |
 | 3 | Fam C1 | C1-d10.0 | Init distance sweep: d_init=10.0 | B7 | sigma=10.0 | 5 | 3000 | BL-B7 | YES | [ ] | [ ] | [ ] |
-| 3 | Fam E1 | E1-ph1-S12 | Phase 1: pretrain on modes {1,2} | k_mode_gmm | centers=(1,0),(-1,0) | 5 | 1000 | — | YES | [~] 1/5 seeds running (batch2) | [ ] | [ ] |
-| 3 | Fam E1 | E1-ph1-S13 | Phase 1: pretrain on modes {1,3} | k_mode_gmm | centers=(1,0),(0.3,1.5) | 5 | 1000 | — | YES | [~] 1/5 seeds running (batch2) | [ ] | [ ] |
-| 3 | Fam E1 | E1-ph1-S23 | Phase 1: pretrain on modes {2,3} | k_mode_gmm | centers=(-1,0),(0.3,1.5) | 5 | 1000 | — | YES | [~] 3/5 seeds running (s2 NaN→killed, replaced s3; batch2) | [ ] | [ ] |
+| 3 | Fam E1 | E1-ph1-S12 | Phase 1: pretrain on modes {1,2} | k_mode_gmm | centers=(1,0),(-1,0) | 5 | 1000 | — | YES | [~] 1/5 done (batch2) | [ ] | [ ] |
+| 3 | Fam E1 | E1-ph1-S13 | Phase 1: pretrain on modes {1,3} | k_mode_gmm | centers=(1,0),(0.3,1.5) | 5 | 1000 | — | YES | [~] 1/5 done (batch2) | [ ] | [ ] |
+| 3 | Fam E1 | E1-ph1-S23 | Phase 1: pretrain on modes {2,3} | k_mode_gmm | centers=(-1,0),(0.3,1.5) | 5 | 1000 | — | YES | [~] 3/5 done (s2 NaN→killed; batch2) | [ ] | [ ] |
 | 3 | Fam E1 | E1-ph2-S12 | Phase 2: resume S={1,2} on true B7 | B7 | — | 5 | 2000 | E1-ph1-S12 | YES | [ ] | [ ] | [ ] |
 | 3 | Fam E1 | E1-ph2-S13 | Phase 2: resume S={1,3} on true B7 | B7 | — | 5 | 2000 | E1-ph1-S13 | YES | [ ] | [ ] | [ ] |
 | 3 | Fam E1 | E1-ph2-S23 | Phase 2: resume S={2,3} on true B7 | B7 | — | 5 | 2000 | E1-ph1-S23 | YES | [ ] | [ ] | [ ] |
@@ -144,4 +144,4 @@ All scripts and launcher entries are now implemented. ✅
 | Batch | Runs | Server | Started (KST) | Finished (KST) | Status | Notes |
 |-------|------|--------|---------------|-----------------|--------|-------|
 | 1 | 20 | ASBS_MC | 2026-04-17 18:07 | 2026-04-17 19:27 | ✅ Done | BL-B1a(5), BL-B5(5), BL-B7(5), BL-B1s(5). b5-s3 exploded, b1s-s3 spiked, b7-s4 NaN at end. |
-| 2 | 20→26 | ASBS_MC | 2026-04-17 19:37 | — | 🏃 Running | B1-rho{0.001,0.01,0.05,0.1}×3seeds, A1×3seeds(✅done), E1-ph1-S13-s2, E1-ph1-S23×3seeds, C2-ph1-m1-s0. Backfilled A1→C2-ph1-m2-s0, C2-ph1-m3-s0, E1-ph1-S12-s0. Killed 3 blown (B1-rho0.05-s0, B1-rho0.1-s0, E1-S23-s2)→replaced with E1-ph1-S23-s3, C2-ph1-m1-s1, C2-ph1-m2-s1. |
+| 2 | 20→36 | ASBS_MC | 2026-04-17 19:37 | — | 🏃 Running | Original 20 + 6 backfills + 10 C2-ph1 backfills. 16 short runs done (A1×3, E1-ph1×5, C2-ph1×8). 10 B1-rho still running + 10 new C2-ph1 filling slots. Killed: B1-rho0.05-s0, B1-rho0.1-s0, E1-S23-s2 (blown up). |
