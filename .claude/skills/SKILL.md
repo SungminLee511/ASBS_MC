@@ -57,7 +57,8 @@ ASBS_MC/
 │   │   ├── b5_asbs.yaml                  # B5: Heterogeneous covariance mixture (NEW)
 │   │   ├── b6_asbs.yaml                  # B6: 25-mode power-law grid (NEW)
 │   │   ├── b7_asbs.yaml                  # B7: Three-well metastable (NEW)
-│   │   └── b8_asbs.yaml                  # B8: LJ3 (NEW)
+│   │   ├── b8_asbs.yaml                  # B8: LJ3 (NEW)
+│   │   └── k_mode_gmm_asbs.yaml         # K-mode Gaussian mixture — for Family A/E (NEW, v3)
 │   ├── problem/                          # (original) demo, dw4, lj13, lj55
 │   │   ├── b1_two_mode.yaml              # (NEW)
 │   │   ├── b2_muller_brown.yaml          # (NEW)
@@ -66,7 +67,8 @@ ASBS_MC/
 │   │   ├── b5_het_cov.yaml               # (NEW)
 │   │   ├── b6_power_law_grid.yaml        # (NEW)
 │   │   ├── b7_three_well.yaml            # (NEW)
-│   │   └── b8_lj3.yaml                   # (NEW)
+│   │   ├── b8_lj3.yaml                   # (NEW)
+│   │   └── k_mode_gmm.yaml              # K-mode Gaussian mixture problem (NEW, v3)
 │   ├── matcher/                          # adjoint_ve, adjoint_vp, corrector
 │   ├── model/                            # fouriermlp, egnn
 │   ├── sde/                              # ve, vp, brownian_motion, graph_ve, graph_vp
@@ -75,7 +77,11 @@ ASBS_MC/
 │   ├── term_cost/                        # score/corrector (+ graph variants)
 │   └── lancher/                          # demo_slurm
 ├── scripts/
-│   ├── mc_utils.py                       # Shared utilities + checkpoint loading (NEW)
+│   ├── mc_utils.py                       # Shared utilities: ckpt loading, sample gen, mode metrics (NEW)
+│   ├── perturb_checkpoint.py             # Weight perturbation: add N(0,σ²I) noise to ckpt (NEW, v3)
+│   ├── reconstruct_tracking.py           # Post-hoc: rebuild mode_tracking.jsonl from ckpts (NEW)
+│   ├── reconstruct_all_1a_1d.sh          # Batch reconstruction for v1 runs (NEW)
+│   ├── launch_v3_experiments.sh          # v3 batch launcher: all families A-E (NEW, v3)
 │   ├── e1_mode_tracking.py               # E1: α_k tracking + death cascade heatmap (NEW)
 │   ├── e3_loss_decomposition.py          # E3: V_intra + V_inter decomposition (NEW)
 │   ├── e4_controller_field.py            # E4: learned vs oracle controller fields (NEW)
@@ -139,8 +145,9 @@ All benchmarks inherit from `BaseEnergy`. Interface: `eval(x) → E(x)`, `grad_E
 | `PowerLawGridMixture` | B6 | 2 | 25 | `spacing`, `sigma`, `alpha` (Zipf exponent) |
 | `ThreeWellMetastableEnergy` | B7 | 2 | 3 | `kappa1` (deep wells), `kappa3` (metastable) |
 | `LennardJonesEnergy` (existing) | B8 | 6 | 6 (permutational) | `n_particles=3` |
+| `KModeGaussianMixture` | v3 | 2 | K (configurable) | `centers` (list), `weights` (list), `sigma` |
 
-Properties: `mode_centers` (tensor of centers), `mode_weights` (target weights) — available on B1, B2, B3, B5, B6, B7.
+Properties: `mode_centers` (tensor of centers), `mode_weights` (target weights) — available on B1, B2, B3, B5, B6, B7, KModeGaussianMixture.
 
 **Note on B2 (Müller-Brown):** Raw energy values are in the hundreds, so the interesting β range is {0.005–0.2}, not {1–10}. At β≥0.5, mode 0 dominates completely.
 
@@ -240,6 +247,48 @@ conda run -n $ENV python evaluation/run_all.py --tables-only
 ```
 
 Output: `figures/*.pdf` and `tables/*.tex`
+
+## v3: Stability Experiments Infrastructure
+
+The v3 experiments ("Verifying Stability of Collapsed States") add infrastructure for pretrain-perturb-observe protocols. See `.claude/TODO/Experimental Guide v3*.md` for full details.
+
+### v3 Train Loop Hooks (`train_loop.py`)
+
+**Data injection (Family B1):** During epochs `[v3_injection_start_epoch, v3_injection_start_epoch + v3_injection_duration)`, injects synthetic samples from a specified mode into the AM regression buffer. Config keys (all via `+key=val` CLI):
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `v3_injection_start_epoch` | int | Epoch to begin injection |
+| `v3_injection_duration` | int | Number of epochs to inject for |
+| `v3_injection_fraction` | float | Fraction of `resample_batch_size` to inject per sub-batch |
+| `v3_injection_mode_center` | list[float] | Center of injected Gaussian, e.g. `[-1.0,0.0]` |
+| `v3_injection_mode_sigma` | float | Std dev of injected mode |
+
+Only works with `AdjointVEMatcher` (all 2D benchmarks use this).
+
+### v3 Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/perturb_checkpoint.py` | Add N(0,σ²I) noise to controller weights. For Families B2, C1. |
+| `scripts/launch_v3_experiments.sh` | Batch launcher for all v3 families. Batches: `baselines`, `family_a`, `family_b1`, `family_b2`, `family_c1`, `family_c2`, `family_e1`, `all`. |
+| `scripts/mc_utils.py` | Utility library for reconstruction: `load_model_from_checkpoint`, `generate_samples`, mode metrics. |
+
+### v3 Experiment Workflow
+
+1. **Train (no eval):** `bash scripts/launch_v3_experiments.sh <batch>` — saves ckpts every 10 epochs, no in-loop eval
+2. **Reconstruct:** `python scripts/reconstruct_tracking.py --results-dir results/v3 --recursive --n-samples 10000`
+3. **Analyze:** (post-hoc analysis scripts — to be implemented)
+
+### v3 Config: KModeGaussianMixture
+
+For experiments needing arbitrary K-mode Gaussian mixtures (Family A, E):
+```bash
+python train.py experiment=k_mode_gmm_asbs \
+    "centers=[[-4,0],[4,0],[0,4]]" \
+    "weights=[0.33,0.33,0.34]" \
+    gmm_sigma=1.0
+```
 
 ## Gotchas
 1. **Minimal modifications to Meta's code** — prefer new files. Only touch `train.py`/`train_loop.py` when experiment hooks are strictly necessary. Current modifications to `train.py`: null-guard for evaluator, mode tracking hook.

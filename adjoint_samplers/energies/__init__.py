@@ -12,4 +12,5 @@ from adjoint_samplers.energies.synthetic_energies import (
     HeterogeneousCovarianceMixture,
     PowerLawGridMixture,
     ThreeWellMetastableEnergy,
+    KModeGaussianMixture,
 )

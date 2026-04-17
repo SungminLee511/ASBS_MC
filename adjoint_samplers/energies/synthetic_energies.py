@@ -404,3 +404,62 @@ class ThreeWellMetastableEnergy(BaseEnergy):
                 self.eval, self.mode_centers, grid_range=(-3, 3), grid_size=300
             )
         return self._cached_mode_weights
+
+
+class KModeGaussianMixture(BaseEnergy):
+    """Configurable K-mode isotropic Gaussian mixture in 2D.
+
+    p(x) proportional to sum_k w_k N(x; mu_k, sigma^2 I)
+
+    Used for Family A experiments (sequential mode addition) and
+    Family E experiments (attractor enumeration) where K >= 3 modes
+    are needed.
+
+    Args:
+        dim: Dimension (must be 2).
+        centers: List of [x, y] mode centers, length K.
+            Example: [[-4, 0], [4, 0], [0, 4]]
+        weights: List of K positive floats (normalized internally).
+            If None, uses uniform 1/K weights.
+        sigma: Shared isotropic std dev for all modes.
+        device: Torch device.
+    """
+
+    def __init__(self, dim=2, centers=None, weights=None, sigma=1.0, device="cpu"):
+        super().__init__("k_mode_gaussian_mixture", dim)
+        assert dim == 2, "KModeGaussianMixture is a 2D benchmark"
+        self.device = device
+        self.sigma = sigma
+        self.var = sigma ** 2
+
+        if centers is None:
+            centers = [[-4.0, 0.0], [4.0, 0.0]]
+
+        self.means = torch.tensor(centers, dtype=torch.float32, device=device)
+        self.K = self.means.shape[0]
+
+        if weights is None:
+            self._weights = torch.ones(self.K, dtype=torch.float32, device=device) / self.K
+        else:
+            w = torch.tensor(weights, dtype=torch.float32, device=device)
+            self._weights = w / w.sum()
+
+        self.log_weights = self._weights.log()
+
+    def eval(self, x: torch.Tensor) -> torch.Tensor:
+        """E(x) = -log p(x) up to a constant."""
+        # x: (B, 2), means: (K, 2)
+        diff = x.unsqueeze(1) - self.means.unsqueeze(0)  # (B, K, 2)
+        sq_dist = (diff ** 2).sum(dim=-1)  # (B, K)
+
+        log_components = -sq_dist / (2 * self.var) + self.log_weights.unsqueeze(0)
+        log_p = torch.logsumexp(log_components, dim=-1)
+        return -log_p
+
+    @property
+    def mode_centers(self):
+        return self.means
+
+    @property
+    def mode_weights(self):
+        return self._weights

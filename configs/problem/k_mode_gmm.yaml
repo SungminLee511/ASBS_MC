@@ -1,0 +1,17 @@
+# @package _global_
+
+# K-Mode Gaussian Mixture (2D)
+# Used for Family A (sequential mode addition) and Family E (attractor enumeration)
+dim: 2
+
+energy:
+  _target_: adjoint_samplers.energies.synthetic_energies.KModeGaussianMixture
+  dim: ${dim}
+  centers: ${centers}
+  weights: ${weights}
+  sigma: ${gmm_sigma}
+
+evaluator:
+  _target_: adjoint_samplers.components.synthetic_2d_evaluator.Synthetic2DEvaluator
+  n_ref_samples: 50000
+  grid_size: 500

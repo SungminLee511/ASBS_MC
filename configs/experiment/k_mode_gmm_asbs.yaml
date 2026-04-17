@@ -1,0 +1,61 @@
+# @package _global_
+
+# K-Mode Gaussian Mixture — ASBS
+# For Family A (sequential mode addition) and Family E (attractor enumeration)
+defaults:
+  - /problem: k_mode_gmm
+  - /source: gauss
+  - /sde@ref_sde: ve
+  - /model@controller: fouriermlp
+  - /state_cost: zero
+  - /term_cost: corrector_term_cost
+  - /matcher@adjoint_matcher: adjoint_ve
+  - /model@corrector: fouriermlp
+  - /matcher@corrector_matcher: corrector
+
+exp_name: k_mode_gmm_asbs
+
+# === problem params (override via CLI) ===
+# Example 3-mode: centers=[[-4,0],[4,0],[0,4]] weights=[0.33,0.33,0.34]
+centers: [[-4.0, 0.0], [4.0, 0.0], [0.0, 4.0]]
+weights: [0.333, 0.333, 0.334]
+gmm_sigma: 1.0
+
+# === source ===
+scale: 5
+
+# === sde ===
+nfe: 200
+sigma_max: 3
+sigma_min: 0.01
+rescale_t: null
+
+# === training ===
+num_epochs: 2000
+max_grad_E_norm: null
+init_stage: adjoint
+
+adj_num_epochs_per_stage: 100
+ctr_num_epochs_per_stage: 20
+
+adjoint_matcher:
+  buffer_size: 10000
+  duplicates: 10
+  resample_size: 512
+  num_epochs_per_stage: ${adj_num_epochs_per_stage}
+  optim:
+    lr: 1e-3
+    weight_decay: 1e-7
+
+corrector_matcher:
+  buffer_size: 10000
+  duplicates: 10
+  resample_size: 512
+  num_epochs_per_stage: ${ctr_num_epochs_per_stage}
+  optim:
+    lr: 1e-3
+    weight_decay: 1e-7
+
+# === eval & logging ===
+use_wandb: false
+eval_freq: 50
