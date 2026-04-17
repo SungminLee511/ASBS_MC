@@ -18,14 +18,14 @@ All evaluation is **post-hoc** via `reconstruct_tracking.py`. Training runs use 
 | 0 | Fam 0 | 0.2 | B1 symmetric as balanced-state stability (0% collapse) | BL-B1s | — | — | — | BL-B1s | N/A | N/A | N/A | [ ] |
 | 0 | Fam 0 | 0.3 | Seed consistency as basin size evidence (B7 pattern) | BL-B7 | — | — | — | BL-B7 | N/A | N/A | N/A | [ ] |
 | 0 | Fam 0 | 0.4 | Separation/temperature sweeps as basin phase transitions | BL-B5 | — | — | — | BL-B5 | N/A | N/A | N/A | [ ] |
-| 0 | Fam 0 | 0.5 | Metastable survival sweep as basin threshold | B7 | kappa3={4,8,12,16,18,20,24,32} | 5 | 2000 | — | YES | [~] k4: 2/5 running (batch3 s0+s1); k8: 5/5 running (batch4); k12: 5/5 running (batch4); k16: 1/5 running (batch4 s0); k18,20,24,32: 0/5 | [ ] | [ ] |
+| 0 | Fam 0 | 0.5 | Metastable survival sweep as basin threshold | B7 | kappa3={4,8,12,16,18,20,24,32} | 5 | 2000 | — | YES | [~] k4: 2/5 done, 3/5 running (batch5); k8: 5/5 ✅ (batch4); k12: 5/5 ✅ (batch4); k16: 1/5 done, 4/5 running (batch5); k18: 5/5 running (batch5); k20: 5/5 running (batch5); k24: 3/5 running (batch5); k32: 0/5 | [ ] | [ ] |
 | 1 | Fam B1 | B1-rho-0.001 | Dead mode revival: rho=0.001, M=50 | B7 | rho=0.001, M=50 | 5 | 3000 | — | YES | [x] 4/5 done (s0-2 batch2, s3 batch3). s4 NaN→killed | [ ] | [ ] |
 | 1 | Fam B1 | B1-rho-0.01 | Dead mode revival: rho=0.01, M=50 | B7 | rho=0.01, M=50 | 5 | 3000 | — | YES | [x] 4/5 done (s0-2 batch2, s3 batch3). s4 NaN→killed | [ ] | [ ] |
 | 1 | Fam B1 | B1-rho-0.05 | Dead mode revival: rho=0.05, M=50 | B7 | rho=0.05, M=50 | 5 | 3000 | — | YES | [~] 3/5 done (s1,s2 batch2, s3 batch3). s0+s4 diverged | [ ] | [ ] |
 | 1 | Fam B1 | B1-rho-0.1 | Dead mode revival: rho=0.1, M=50 | B7 | rho=0.1, M=50 | 5 | 3000 | — | YES | [~] 3/5 done (s1,s2 batch2, s3 batch3). s0+s4 diverged | [ ] | [ ] |
-| 1 | Fam B1 | B1-M10 | Dead mode revival: rho=0.05, M=10 | B7 | rho=0.05, M=10 | 5 | 3010 | — | YES | [~] 2/5 done (s0,s1 batch3). s2+s3 running. s4 NaN→killed | [ ] | [ ] |
+| 1 | Fam B1 | B1-M10 | Dead mode revival: rho=0.05, M=10 | B7 | rho=0.05, M=10 | 5 | 3010 | — | YES | [x] 4/5 done (s0-3 batch3). s4 NaN→killed | [ ] | [ ] |
 | 1 | Fam B1 | B1-M50 | Dead mode revival: rho=0.05, M=50 (same as B1-rho-0.05) | B7 | rho=0.05, M=50 | 5 | 3050 | — | YES | = B1-rho-0.05 (see above) | [ ] | [ ] |
-| 1 | Fam B1 | B1-M200 | Dead mode revival: rho=0.05, M=200 | B7 | rho=0.05, M=200 | 5 | 3200 | — | YES | [~] 5/5 running (batch3) | [ ] | [ ] |
+| 1 | Fam B1 | B1-M200 | Dead mode revival: rho=0.05, M=200 | B7 | rho=0.05, M=200 | 5 | 3200 | — | YES | [~] 4/5 done (s0-3 batch3). s4 NaN | [ ] | [ ] |
 | 1 | Fam B1 | B1-ctrl | B7 extended baseline (no injection, 3000 ep) | B7 | — | 5 | 3000 | — | YES | [~] 4/5 done (s0-3 batch3). s4 NaN→killed | [ ] | [ ] |
 | 1 | Fam A | A1 | 2-mode pretrain -> 3-mode switch | k_mode_gmm | 3rd mode at (0,4) | 5 | 2000 | BL-B1s | YES | [x] 5/5 done (s0-2 batch2, s3+s4 batch3) | [ ] | [ ] |
 | 1 | Fam C2 | C2-ph1-m1 | Phase 1: pretrain single-mode at B7 mode 1 (1,0) | k_mode_gmm | K=1, center=(1,0) | 5 | 1000 | — | YES | [x] | [ ] | [ ] |
@@ -146,4 +146,5 @@ All scripts and launcher entries are now implemented. ✅
 | 1 | 20 | ASBS_MC | 2026-04-17 18:07 | 2026-04-17 19:27 | ✅ Done | BL-B1a(5), BL-B5(5), BL-B7(5), BL-B1s(5). b5-s3 exploded, b1s-s3 spiked, b7-s4 NaN at end. |
 | 2 | 36 | ASBS_MC | 2026-04-17 19:37 | 2026-04-17 21:25 | ✅ Done (6 fail) | Original 20 + 16 backfills. B1-rho×12, A1×3, E1-ph1×6, C2-ph1×15. Killed: B1-rho0.05-s0, B1-rho0.1-s0 (diverged), E1-S23-s2 (NaN). A1×3 near-instant (ckpt resume). |
 | 3 | 20+15 | ASBS_MC | 2026-04-17 21:50 | — | 🏃 Partial | Batch3 script (20): 14 done, 6 NaN→killed (all s4 for rho configs + E1-S13 s0,s3). Separately launched: B1-M10 s0-4 (s0+s1 done, s2+s3 running, s4 NaN→killed), B1-M200 s0-4 (all 5 running), Fam0.5 k4 s0+s1 (running). B1-ctrl s0-3 ✅, s4 NaN→killed. |
-| 4 | 11 | ASBS_MC | 2026-04-18 00:19 | — | 🏃 Running | Fam0.5: k8×5 (GPU0), k12×5 (GPU1), k16 s0 (GPU1). Fills to 10/GPU alongside batch3 remainders. |
+| 4 | 11 | ASBS_MC | 2026-04-18 00:19 | 2026-04-18 01:25 | ✅ Done | Fam0.5: k8×5 (GPU0), k12×5 (GPU1), k16 s0 (GPU1). 0 failures. |
+| 5 | 20 | ASBS_MC | 2026-04-18 01:35 | — | 🏃 Running | Fam0.5: k4 s2-4 + k16 s1-4 + k18 s0-2 (GPU0); k18 s3-4 + k20 s0-4 + k24 s0-2 (GPU1). Remaining after: k24 s3-4, k32 s0-4 (7 runs). |
