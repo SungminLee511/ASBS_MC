@@ -18,7 +18,7 @@ All evaluation is **post-hoc** via `reconstruct_tracking.py`. Training runs use 
 | 0 | Fam 0 | 0.2 | B1 symmetric as balanced-state stability (0% collapse) | BL-B1s | — | — | — | BL-B1s | N/A | N/A | N/A | [ ] |
 | 0 | Fam 0 | 0.3 | Seed consistency as basin size evidence (B7 pattern) | BL-B7 | — | — | — | BL-B7 | N/A | N/A | N/A | [ ] |
 | 0 | Fam 0 | 0.4 | Separation/temperature sweeps as basin phase transitions | BL-B5 | — | — | — | BL-B5 | N/A | N/A | N/A | [ ] |
-| 0 | Fam 0 | 0.5 | Metastable survival sweep as basin threshold | — | — | — | — | — | NO | N/A | N/A | [ ] |
+| 0 | Fam 0 | 0.5 | Metastable survival sweep as basin threshold | B7 | kappa3={4,8,12,16,18,20,24,32} | 5 | 2000 | — | YES | [ ] | [ ] | [ ] |
 | 1 | Fam B1 | B1-rho-0.001 | Dead mode revival: rho=0.001, M=50 | B7 | rho=0.001, M=50 | 5 | 3000 | — | YES | [ ] | [ ] | [ ] |
 | 1 | Fam B1 | B1-rho-0.01 | Dead mode revival: rho=0.01, M=50 | B7 | rho=0.01, M=50 | 5 | 3000 | — | YES | [ ] | [ ] | [ ] |
 | 1 | Fam B1 | B1-rho-0.05 | Dead mode revival: rho=0.05, M=50 | B7 | rho=0.05, M=50 | 5 | 3000 | — | YES | [ ] | [ ] | [ ] |
@@ -77,6 +77,7 @@ All evaluation is **post-hoc** via `reconstruct_tracking.py`. Training runs use 
 | Category | Configs | x Seeds | = Total Runs |
 |----------|---------|---------|--------------|
 | Baselines (BL-*) | 4 | 5 | 20 |
+| Family 0.5 (kappa_3 sweep) | 8 | 5 | 40 |
 | Family B1 (rho sweep + M sweep + ctrl) | 8 | 5 | 40 |
 | Family A1 | 1 | 5 | 5 |
 | Family C2 (phase 1 + phase 2) | 6 | 5 | 30 |
@@ -85,7 +86,7 @@ All evaluation is **post-hoc** via `reconstruct_tracking.py`. Training runs use 
 | Family A3 (depth sweep) | 4 | 5 | 20 |
 | Family C1 (init distance) | 4 | 5 | 20 |
 | Family E1 (phase 1 two-mode + phase 2 all) | 9 | 5 | 45 |
-| **TOTAL training runs** | | | **225** |
+| **TOTAL training runs** | | | **265** |
 
 ---
 
@@ -94,6 +95,7 @@ All evaluation is **post-hoc** via `reconstruct_tracking.py`. Training runs use 
 ```
 Phase 1 — Independent pretraining (can all run in parallel):
   BL-B1a, BL-B5, BL-B7, BL-B1s        (20 runs)
+  Family 0.5 kappa_3 sweep              (40 runs — B7 with varied kappa3)
   B1-rho-*, B1-M*, B1-ctrl              (40 runs — B7 trains from scratch)
   C2-ph1-m1, C2-ph1-m2, C2-ph1-m3      (15 runs)
   E1-ph1-S12, E1-ph1-S13, E1-ph1-S23   (15 runs)
@@ -120,15 +122,17 @@ Phase 4 — Analysis (scripts needed):
 
 ## Missing Code
 
-| Item | What's Needed | Priority |
-|------|---------------|----------|
-| D1 `estimate_jacobian.py` | Script to apply per-mode epsilon perturbations, run 1 AM epoch, measure delta_alpha response | Tier 2 |
-| D2 spectral analysis | Eigenvalue computation from D1 Jacobian matrix | Tier 2 |
-| D3 `fit_decay.py` | Fit exponential decay to alpha trajectories from B1/B2 data | Tier 2 |
-| F1 `measure_dead_adjoints.py` | Monte Carlo estimation of dead-mode conditional adjoint Y_bar_k | Tier 2 |
-| F2 adjoint sensitivity | Extend F1 to measure dY_bar_k / dalpha_j under perturbation | Tier 2 |
-| E2 transition threshold | Launcher + sweep protocol for injection magnitude → basin transition | Tier 3 |
-| B3 launcher entry | Add `family_b3` to `launch_v3_experiments.sh` (v2 hook exists in train.py) | Tier 3 |
-| G1 `v1_contraction.py` | Extract late-epoch decay rate from converged baseline trajectories | Supp |
-| G2 `autocorrelation.py` | Autocorrelation analysis of alpha oscillations in converged regime | Supp |
-| 0.5 metastable survival | Needs B7 kappa_3 sweep configs (not in current launcher) | Tier 0 |
+All scripts and launcher entries are now implemented. ✅
+
+| Item | Status | Location |
+|------|--------|----------|
+| D1 `estimate_jacobian.py` | ✅ Done | `scripts/estimate_jacobian.py` |
+| D2 spectral analysis | ✅ Done | Included in `scripts/estimate_jacobian.py` |
+| D3 `fit_decay.py` | ✅ Done | `scripts/fit_decay.py` |
+| F1 `measure_dead_adjoints.py` | ✅ Done | `scripts/measure_dead_adjoints.py` |
+| F2 adjoint sensitivity | ✅ Done | `scripts/measure_dead_adjoints.py` (via `--perturb-sigmas`) |
+| E2 transition threshold | ✅ Done | `launch_v3_experiments.sh` → `run_family_e2()` |
+| B3 launcher entry | ✅ Done | `launch_v3_experiments.sh` → `run_family_b3()` |
+| G1 `v1_contraction.py` | ✅ Done | `scripts/v1_contraction.py` |
+| G2 `autocorrelation.py` | ✅ Done | `scripts/autocorrelation.py` |
+| 0.5 metastable survival | ✅ Done | `launch_v3_experiments.sh` → `run_family_05()` (kappa3 sweep: 4,8,12,16,18,20,24,32) |

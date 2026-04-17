@@ -80,6 +80,7 @@ ASBS_MC/
 │   ├── mc_utils.py                       # Shared utilities: ckpt loading, sample gen, mode metrics (NEW)
 │   ├── perturb_checkpoint.py             # Weight perturbation: add N(0,σ²I) noise to ckpt (NEW, v3)
 │   ├── reconstruct_tracking.py           # Post-hoc: rebuild mode_tracking.jsonl from ckpts (NEW)
+│   ├── fit_decay.py                      # D3: fit exponential decay to post-perturbation α trajectories (NEW, v3)
 │   ├── reconstruct_all_1a_1d.sh          # Batch reconstruction for v1 runs (NEW)
 │   ├── launch_v3_experiments.sh          # v3 batch launcher: all families A-E (NEW, v3)
 │   ├── e1_mode_tracking.py               # E1: α_k tracking + death cascade heatmap (NEW)
@@ -97,6 +98,10 @@ ASBS_MC/
 │   ├── e12_death_cascade.py              # E12: full death cascade analysis (NEW)
 │   ├── e1_lj3_permutations.py            # E1/B8: LJ3 permutation counting (NEW)
 │   ├── reconstruct_tracking.py           # Post-hoc: rebuild mode_tracking.jsonl from ckpts (NEW)
+│   ├── estimate_jacobian.py                  # D1/D2: Jacobian estimation + spectral analysis (NEW, v3)
+│   ├── measure_dead_adjoints.py              # F1/F2: dead-mode adjoint Monte Carlo + sensitivity (NEW, v3)
+│   ├── v1_contraction.py                     # G1: empirical contraction factor from baselines (NEW, v3)
+│   ├── autocorrelation.py                    # G2: VAR(1) autocorrelation of α oscillations (NEW, v3)
 │   ├── demo.sh, dw4.sh, lj13.sh, lj55.sh, download.sh  # (original)
 ├── evaluation/                           # Post-hoc figure/table generation
 │   ├── run_all.py                        # Master script: generates all figures + tables
@@ -271,7 +276,12 @@ Only works with `AdjointVEMatcher` (all 2D benchmarks use this).
 | Script | Purpose |
 |--------|---------|
 | `scripts/perturb_checkpoint.py` | Add N(0,σ²I) noise to controller weights. For Families B2, C1. |
-| `scripts/launch_v3_experiments.sh` | Batch launcher for all v3 families. Batches: `baselines`, `family_a`, `family_b1`, `family_b2`, `family_c1`, `family_c2`, `family_e1`, `all`. |
+| `scripts/launch_v3_experiments.sh` | Batch launcher for all v3 families. Batches: `baselines`, `family_a`, `family_b1`, `family_b2`, `family_b3`, `family_c1`, `family_c2`, `family_e1`, `family_e2`, `family_05`, `all`. |
+| `scripts/estimate_jacobian.py` | D1/D2: Block-by-block Jacobian estimation + spectral analysis at collapsed states. |
+| `scripts/fit_decay.py` | D3: Fit exponential decay to α trajectories from B1/B2 perturbation runs. |
+| `scripts/measure_dead_adjoints.py` | F1/F2: Monte Carlo dead-mode adjoint measurement + sensitivity analysis (use `--perturb-sigmas` for F2). |
+| `scripts/v1_contraction.py` | G1: Extract empirical contraction factor from converged baseline trajectories. |
+| `scripts/autocorrelation.py` | G2: Autocorrelation/VAR(1) analysis of α oscillations for Jacobian eigenvalue estimation. |
 | `scripts/mc_utils.py` | Utility library for reconstruction: `load_model_from_checkpoint`, `generate_samples`, mode metrics. |
 
 ### v3 Experiment Workflow

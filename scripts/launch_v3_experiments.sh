@@ -18,6 +18,8 @@
 #   bash scripts/launch_v3_experiments.sh family_c1
 #   bash scripts/launch_v3_experiments.sh family_c2
 #   bash scripts/launch_v3_experiments.sh family_e1
+#   bash scripts/launch_v3_experiments.sh family_e2
+#   bash scripts/launch_v3_experiments.sh family_b3
 #
 #   # Run everything:
 #   nohup bash scripts/launch_v3_experiments.sh all > logs/v3_all.log 2>&1 &
@@ -387,6 +389,111 @@ run_family_e1() {
 }
 
 # ============================================================================
+# FAMILY E2: Transition Threshold Between Collapsed States
+# ============================================================================
+run_family_e2() {
+    echo ""
+    echo "=========================================="
+    echo "FAMILY E2: Transition Threshold Between Collapsed States"
+    echo "=========================================="
+
+    # From an S={1}-collapsed state on B7, inject revival signal for dead modes
+    # at increasing magnitudes to find the transition threshold.
+    # Uses E1 phase2 S1 checkpoints (single-mode collapsed on mode 1).
+    # Dead modes to revive: mode 2 at (-1,0), mode 3 at (0.3,1.5)
+
+    # ── E2: Revive mode 2 (center=[-1,0]) from S={1}-collapsed state ──
+    echo "--- E2: Revive mode 2 from S={1} ---"
+    TOTAL=$((TOTAL + 25))
+    for RHO in 0.05 0.1 0.2 0.3 0.5; do
+        for SEED in $SEEDS; do
+            E1_CKPT="${RESULTS}/family_e1/phase2_S1/seed_${SEED}/checkpoints/checkpoint_latest.pt"
+            run_train "${RESULTS}/family_e2/revive_m2_rho${RHO}/seed_${SEED}" \
+                experiment=b7_asbs seed=$SEED num_epochs=3200 \
+                checkpoint="${E1_CKPT}" \
+                +v3_injection_start_epoch=2000 \
+                +v3_injection_duration=200 \
+                +v3_injection_fraction=${RHO} \
+                "+v3_injection_mode_center=[-1.0,0.0]" \
+                +v3_injection_mode_sigma=0.22
+        done
+    done
+
+    # ── E2: Revive mode 3 (center=[0.3,1.5]) from S={1}-collapsed state ──
+    echo "--- E2: Revive mode 3 from S={1} ---"
+    TOTAL=$((TOTAL + 25))
+    for RHO in 0.05 0.1 0.2 0.3 0.5; do
+        for SEED in $SEEDS; do
+            E1_CKPT="${RESULTS}/family_e1/phase2_S1/seed_${SEED}/checkpoints/checkpoint_latest.pt"
+            run_train "${RESULTS}/family_e2/revive_m3_rho${RHO}/seed_${SEED}" \
+                experiment=b7_asbs seed=$SEED num_epochs=3200 \
+                checkpoint="${E1_CKPT}" \
+                +v3_injection_start_epoch=2000 \
+                +v3_injection_duration=200 \
+                +v3_injection_fraction=${RHO} \
+                "+v3_injection_mode_center=[0.3,1.5]" \
+                +v3_injection_mode_sigma=0.22
+        done
+    done
+}
+
+# ============================================================================
+# FAMILY B3: Bias Injection with Continuous Training
+# ============================================================================
+run_family_b3() {
+    echo ""
+    echo "=========================================="
+    echo "FAMILY B3: Bias Injection with Continuous Training"
+    echo "=========================================="
+
+    # Take converged B7 baselines, resume with v2_bias_injection at various
+    # values. The hook in train.py adds an asymmetric drift to the controller's
+    # output bias each epoch. Train for 1000 more epochs to see if the
+    # controller suppresses or amplifies the bias.
+
+    TOTAL=$((TOTAL + 15))
+    for BIAS in 0.001 0.01 0.1; do
+        for SEED in $SEEDS; do
+            B7_CKPT="${RESULTS}/baselines/b7/seed_${SEED}/checkpoints/checkpoint_latest.pt"
+            run_train "${RESULTS}/family_b3/bias_${BIAS}/seed_${SEED}" \
+                experiment=b7_asbs seed=$SEED num_epochs=3000 \
+                checkpoint="${B7_CKPT}" \
+                +v2_bias_injection=${BIAS}
+        done
+    done
+}
+
+# ============================================================================
+# FAMILY 0.5: Metastable Survival Sweep (kappa_3 phase transition)
+# ============================================================================
+run_family_05() {
+    echo ""
+    echo "=========================================="
+    echo "FAMILY 0.5: Metastable Survival Sweep (kappa_3)"
+    echo "=========================================="
+
+    # Sweep kappa_3 across the phase transition where mode 3 goes from
+    # surviving (kappa_3 <= 16, 100% survival in v1) to dying (kappa_3 = 20,
+    # 60% survival). This maps the basin boundary: at low kappa_3 the balanced
+    # state's basin captures all random inits; at high kappa_3 the "mode 3 dead"
+    # basin begins to capture some inits.
+    #
+    # Values: 4, 8, 12, 16, 18, 20, 24, 32
+    #   - 4-16:  expected ~100% survival (deep in balanced basin)
+    #   - 18-20: transition region
+    #   - 24-32: expected high collapse rate (deep in collapsed basin)
+
+    TOTAL=$((TOTAL + 40))  # 8 kappa values x 5 seeds
+    for K3 in 4 8 12 16 18 20 24 32; do
+        for SEED in $SEEDS; do
+            run_train "${RESULTS}/family_05/kappa3_${K3}/seed_${SEED}" \
+                experiment=b7_asbs seed=$SEED num_epochs=2000 \
+                kappa3=${K3}
+        done
+    done
+}
+
+# ============================================================================
 # DISPATCHER
 # ============================================================================
 BATCH="${1:-all}"
@@ -405,21 +512,27 @@ case "$BATCH" in
     family_a)    run_family_a ;;
     family_b1)   run_family_b1 ;;
     family_b2)   run_family_b2 ;;
+    family_b3)   run_family_b3 ;;
     family_c1)   run_family_c1 ;;
     family_c2)   run_family_c2 ;;
     family_e1)   run_family_e1 ;;
+    family_e2)   run_family_e2 ;;
+    family_05)   run_family_05 ;;
     all)
         run_baselines
         run_family_b1
         run_family_a
         run_family_b2
+        run_family_b3
         run_family_c1
         run_family_c2
         run_family_e1
+        run_family_e2
+        run_family_05
         ;;
     *)
         echo "Unknown batch: $BATCH"
-        echo "Available: baselines, family_a, family_b1, family_b2, family_c1, family_c2, family_e1, all"
+        echo "Available: baselines, family_a, family_b1, family_b2, family_b3, family_c1, family_c2, family_e1, family_e2, family_05, all"
         exit 1
         ;;
 esac
