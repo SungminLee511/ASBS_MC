@@ -83,6 +83,33 @@ def main(cfg):
         )
 
 
+        # ── v2 hooks: bias injection (A1.1) ──
+        if "v2_bias_injection" in cfg and cfg.v2_bias_injection is not None:
+            bias_val = float(cfg.v2_bias_injection)
+            with torch.no_grad():
+                # Add a constant to final-layer bias to break symmetry.
+                # Positive bias_val shifts drift in +x direction (toward mu2).
+                # For B1 with mu1=[-3,0], mu2=[3,0], positive → favors mode 2.
+                controller.out_layer.bias.data[0] += bias_val
+            print(f"[v2] Bias injection: added {bias_val} to controller.out_layer.bias[0]")
+
+        # ── v2 hooks: biased initialization (A1.3) ──
+        if "v2_biased_init_eps" in cfg and cfg.v2_biased_init_eps is not None:
+            eps = float(cfg.v2_biased_init_eps)
+            with torch.no_grad():
+                controller.out_layer.weight.data += eps
+            print(f"[v2] Biased init: added eps={eps} to controller.out_layer.weight")
+
+        # ── v2 hooks: over-training (A4.1) ──
+        # Just pass +v2_train_itr_multiplier=10 to multiply train_itr_per_epoch
+        if "v2_train_itr_multiplier" in cfg and cfg.v2_train_itr_multiplier is not None:
+            orig = cfg.train_itr_per_epoch
+            from omegaconf import OmegaConf
+            OmegaConf.update(cfg, "train_itr_per_epoch",
+                             int(orig * cfg.v2_train_itr_multiplier))
+            print(f"[v2] Over-training: train_itr_per_epoch {orig} → {cfg.train_itr_per_epoch}")
+
+
         print("Instantiating optimizer...")
         lr_schedule = None # TODO(ghliu) add scheduler
         if corrector is not None:
@@ -275,6 +302,19 @@ def main(cfg):
                     corrector=corrector,
                     corrector_matcher=corrector_matcher,
                 )
+
+            # ── v2 hooks: parameter trajectory saving (A4.2) ──
+            if (
+                "v2_save_params_freq" in cfg
+                and cfg.v2_save_params_freq is not None
+                and cfg.v2_save_params_freq > 0
+                and epoch % cfg.v2_save_params_freq == 0
+                and distributed_mode.is_main_process()
+            ):
+                params_dir = Path("param_trajectories")
+                params_dir.mkdir(exist_ok=True)
+                ctrl = controller.module if hasattr(controller, "module") else controller
+                torch.save(ctrl.state_dict(), params_dir / f"params_{epoch:04d}.pt")
 
             # ── Checkpoint saving (independent of eval) ──
             save_this_epoch = (
