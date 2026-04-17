@@ -7,33 +7,34 @@ Seeds: 3 per condition (seeds 0, 1, 2). Up to 1000 epochs per run (prereqs up to
 
 ## Training Run Inventory
 
-### Batch 1 — Baselines & Phase-1 Pretrains (20 runs, launched 2026-04-17)
+### Batch 1 — Baselines & Phase-1 Pretrains (20 runs, launched 2026-04-17 15:52 KST)
 
 | # | GPU | Experiment | Seeds | Epochs | Status |
 |---|-----|-----------|-------|--------|--------|
-| 1-3 | 0 | B7 baseline | 0,1,2 | 2000 | 🔄 Running |
-| 4-6 | 0 | B1_sym baseline | 0,1,2 | 2000 | 🔄 Queued |
-| 7-9 | 0 | C2 phase1 mode1 | 0,1,2 | 1000 | 🔄 Queued |
-| 10 | 0 | C2 phase1 mode2 | 0 | 1000 | 🔄 Queued |
-| 11-12 | 1 | C2 phase1 mode2 | 1,2 | 1000 | 🔄 Running |
-| 13-15 | 1 | C2 phase1 mode3 | 0,1,2 | 1000 | 🔄 Queued |
-| 16-18 | 1 | E1 phase1 S12 | 0,1,2 | 1000 | 🔄 Queued |
-| 19-20 | 1 | E1 phase1 S13 | 0,1 | 1000 | 🔄 Queued |
+| 1-3 | 0 | B7 baseline | 0,1,2 | 2000 | 🔄 Running (~56%, ETA 17:10 KST) |
+| 4-6 | 0 | B1_sym baseline | 0,1,2 | 2000 | 🔄 Running (~56%, ETA 17:10 KST) |
+| 7-9 | 0 | C2 phase1 mode1 | 0,1,2 | 1000 | ✅ Done |
+| 10 | 0 | C2 phase1 mode2 | 0 | 1000 | ✅ Done |
+| 11-12 | 1 | C2 phase1 mode2 | 1,2 | 1000 | ✅ Done |
+| 13-15 | 1 | C2 phase1 mode3 | 0,1,2 | 1000 | ✅ Done |
+| 16-17 | 1 | E1 phase1 S12 | 0,1 | 1000 | ✅ Done |
+| 18 | 1 | E1 phase1 S12 | 2 | 1000 | ❌ NaN (killed — original + relaunch both diverged) |
+| 19-20 | 1 | E1 phase1 S13 | 0,1 | 1000 | ✅ Done |
 
 **Unlocks:** B7 baselines → B2, C1, D1, F1, F2. B1_sym → A1, A2, A3. C2p1 → C2p2, E1p2-single.
 
-### Batch 2 — B1 Injection (⭐ most important) + A1 + remaining prereqs (20 runs, auto-queued)
+### Batch 2 — B1 Injection (⭐ most important) + A1 + remaining prereqs (20 runs)
 
 | # | GPU | Experiment | Seeds | Epochs | Status |
 |---|-----|-----------|-------|--------|--------|
-| 1-3 | 0 | B1 inject rho=0.001/M=50 | 0,1,2 | 3000 | ⏳ After batch 1 |
-| 4-6 | 0 | B1 inject rho=0.01/M=50 | 0,1,2 | 3000 | ⏳ After batch 1 |
-| 7-9 | 0 | A1: 2→3 mode switch | 0,1,2 | 2000 | ⏳ After batch 1 |
-| 10 | 0 | E1 phase1 S13 | 2 | 1000 | ⏳ After batch 1 |
-| 11-13 | 1 | B1 inject rho=0.05/M=50 | 0,1,2 | 3000 | ⏳ After batch 1 |
-| 14-16 | 1 | B1 inject rho=0.1/M=50 | 0,1,2 | 3000 | ⏳ After batch 1 |
-| 17-19 | 1 | E1 phase1 S23 | 0,1,2 | 1000 | ⏳ After batch 1 |
-| 20 | 1 | C2 phase2 mode1 | 0 | 2000 | ⏳ After batch 1 |
+| 1-3 | 0 | B1 inject rho=0.001/M=50 | 0,1,2 | 3000 | ⏳ After batch 1 GPU0 |
+| 4-6 | 0 | B1 inject rho=0.01/M=50 | 0,1,2 | 3000 | ⏳ After batch 1 GPU0 |
+| 7-9 | 0 | A1: 2→3 mode switch | 0,1,2 | 2000 | ⏳ After batch 1 GPU0 |
+| 10 | 0 | E1 phase1 S13 | 2 | 1000 | ⏳ After batch 1 GPU0 |
+| 11-13 | 1 | B1 inject rho=0.05/M=50 | 0,1,2 | 3000 | 🔄 Running (launched 2026-04-17 16:37 KST) |
+| 14-16 | 1 | B1 inject rho=0.1/M=50 | 0,1,2 | 3000 | 🔄 Running (launched 2026-04-17 16:37 KST) |
+| 17-19 | 1 | E1 phase1 S23 | 0,1,2 | 1000 | 🔄 Running (launched 2026-04-17 16:37 KST) |
+| 20 | 1 | C2 phase2 mode1 | 0 | 2000 | 🔄 Running (launched 2026-04-17 16:37 KST) |
 
 ### Future Batches (not yet launched)
 
@@ -166,8 +167,8 @@ Seeds: 3 per condition (seeds 0, 1, 2). Up to 1000 epochs per run (prereqs up to
 
 | Batch | Runs | Epochs (approx) | Content | Status |
 |-------|------|-----------------|---------|--------|
-| 1 | 20 | ~26,000 | Baselines + C2p1 + E1p1 (partial) | 🔄 Running |
-| 2 | 20 | ~48,000 | B1 inject rho-sweep + A1 + E1p1 S23 + C2p2 start | ⏳ Auto-queued |
+| 1 | 20 | ~26,000 | Baselines + C2p1 + E1p1 (partial) | 🔄 GPU0: 6 running, GPU1: 13 done, 1 NaN |
+| 2 | 20 | ~48,000 | B1 inject rho-sweep + A1 + E1p1 S23 + C2p2 start | 🔄 GPU1: 10 running; GPU0: ⏳ after batch 1 |
 | 3 | ~44 | ~70,000 | C2p2 + E1p2 + B1 M-sweep + B2 | Not launched |
 | 4 | ~42 | ~60,000 | A2 + A3 + C1 + B1 baseline | Not launched |
 | 5+ | ~20 | ~30,000 | E2 + B3 + D1/D3 micro-runs | Not launched |
